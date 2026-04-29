@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { CompanyStats, useCompanyContext } from "./Contexts/CompanyContext";
+import {
+  BalanceSheet,
+  CashFlowStatement,
+  CompanyStats,
+  EarningsReport,
+  IncomeStatement,
+  useCompanyContext,
+} from "./Contexts/CompanyContext";
 import { FinancialGrid } from "./FinancialGrid";
 import { COLORS } from "../constants/Colors";
 import { useWS } from "./Contexts/WSContest";
@@ -7,13 +14,34 @@ import { useWS } from "./Contexts/WSContest";
 type Period = "Annual" | "Quarterly";
 type ReportType = "Income" | "Balance" | "Cash" | "Earnings";
 
+type FinancialData =
+  | IncomeStatement[]
+  | BalanceSheet[]
+  | CashFlowStatement[]
+  | EarningsReport[];
+
+const REPORT_MAP: Record<Period, Record<ReportType, keyof CompanyStats>> = {
+  Annual: {
+    Income: "AnnualIncome",
+    Balance: "AnnualBalance",
+    Cash: "AnnualCash",
+    Earnings: "AnnualEarnings",
+  },
+  Quarterly: {
+    Income: "QuarterlyIncome",
+    Balance: "QuarterlyBalance",
+    Cash: "QuarterlyCash",
+    Earnings: "QuarterlyEarnings",
+  },
+};
+
 const getActiveReport = (
   stats: CompanyStats,
   period: Period,
   type: ReportType,
-) => {
-  const key = `${period}${type}` as keyof CompanyStats;
-  return stats[key] as any[]; // Type assertion to help TS understand it's an array
+): FinancialData => {
+  const key = REPORT_MAP[period][type];
+  return (stats[key] as FinancialData) ?? [];
 };
 interface FinancialsCardProps {
   setActiveCard: (query: string) => void;

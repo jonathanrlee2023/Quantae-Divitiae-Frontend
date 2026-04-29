@@ -102,10 +102,14 @@ export const StockProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateStockPoint = useCallback((symbol: string, point: StockPoint) => {
-    setStockPoints((prev) => ({
-      ...prev,
-      [symbol]: [...(prev[symbol] || []).slice(-1920), point],
-    }));
+    setStockPoints((prev) => {
+      const existing = prev[symbol] || [];
+      const next =
+        existing.length >= 1920
+          ? [...existing.slice(1), point]
+          : [...existing, point];
+      return { ...prev, [symbol]: next };
+    });
   }, []);
 
   const updateHistoricalStockPoint = useCallback(

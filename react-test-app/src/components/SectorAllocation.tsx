@@ -152,7 +152,7 @@ export const SectorAllocation: React.FC<SectorAllocationProps> = ({
     }
 
     return data;
-  }, [ids, activePortfolio, companyStats, stockPoints, balance, cash]);
+  }, [balancePoints, activePortfolio]);
   return (
     <div
       className="card chart-card text-light p-3"

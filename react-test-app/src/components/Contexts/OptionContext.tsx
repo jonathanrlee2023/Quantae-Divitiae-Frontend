@@ -44,10 +44,14 @@ export const OptionProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateOptionPoint = useCallback(
     (symbol: string, point: OptionPoint) => {
-      setOptionPoints((prev) => ({
-        ...prev,
-        [symbol]: [...(prev[symbol] || []).slice(-1920), point],
-      }));
+      setOptionPoints((prev) => {
+        const existing = prev[symbol] || [];
+        const next =
+          existing.length >= 1920
+            ? [...existing.slice(1), point]
+            : [...existing, point];
+        return { ...prev, [symbol]: next };
+      });
     },
     [],
   );

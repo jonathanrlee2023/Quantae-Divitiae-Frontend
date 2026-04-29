@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from "react";
+import React, { act, useEffect, useRef, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -106,14 +106,19 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
   const latestPoint = points.length > 0 ? points[points.length - 1] : null;
   const latestMark = latestPoint?.Mark ?? 0;
 
+  const minutePointsRef = useRef<Map<number, OptionPoint>>(new Map());
+  const lastProcessedIndexRef = useRef<number>(0);
+
   const graphData = React.useMemo(() => {
-    // Your logic here, unchanged
+    const minutePoints = minutePointsRef.current;
 
-    const minutePoints = new Map<number, OptionPoint>();
+    // Only process points we haven't seen yet
+    const newPoints = points.slice(lastProcessedIndexRef.current);
+    lastProcessedIndexRef.current = points.length;
 
-    for (const p of points) {
+    for (const p of newPoints) {
+      // only iterates NEW points
       const minuteKey = Math.floor((p.timestamp - 15) / 60);
-
       const pointTime = new Date(p.timestamp * 1000);
       const now = new Date();
 
@@ -133,9 +138,7 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
         now.getMinutes(),
       ).getTime();
 
-      if (pointMinute < currentMinute) {
-        minutePoints.set(minuteKey, p);
-      } else if (pointMinute === currentMinute) {
+      if (pointMinute <= currentMinute) {
         minutePoints.set(minuteKey, p);
       }
     }
@@ -158,7 +161,7 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
         },
       ],
     };
-  }, [points, ticker, strike, type, month, day, year, dataPoint]);
+  }, [points, dataPoint, ticker, strike, type, month, day, year]);
   const options = React.useMemo(() => {
     return {
       responsive: true,
@@ -233,6 +236,11 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
       },
     };
   }, [dataPoint, ticker]);
+
+  useEffect(() => {
+    minutePointsRef.current = new Map();
+    lastProcessedIndexRef.current = 0;
+  }, [optionID]);
 
   return (
     <div

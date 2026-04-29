@@ -160,6 +160,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
     // Cleanup on unmount or clientID change
     return () => {
       ws.current?.close();
+      ws.current = null;
     };
   }, [clientID]);
 
