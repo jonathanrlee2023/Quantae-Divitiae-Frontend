@@ -22,7 +22,7 @@ export const IdCards: React.FC<IdCardProps> = ({
   activePortfolio,
 }) => {
   const { ids, setPreviousID, clientID } = useWS();
-  const portfolioIds = ids[activePortfolio];
+  const portfolioIds = ids[activePortfolio] ?? {};
   const previousIdsRef = useRef<Record<string, number>>({});
   const { stockPoints, historicalStockPoints } = useStockContext();
   const { optionPoints } = useOptionContext();

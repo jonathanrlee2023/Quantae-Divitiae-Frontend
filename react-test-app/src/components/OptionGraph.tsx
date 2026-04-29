@@ -446,11 +446,22 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
                 clientID,
               );
               ModifyTracker("newTracker", expectedSymbol);
-              setIds((prev) => ({
-                ...prev,
-                [expectedSymbol]:
-                  (prev[activePortfolio][expectedSymbol] ?? 0) + amount,
-              }));
+              setIds((prev) => {
+                const nextState = { ...prev };
+
+                if (!nextState[activePortfolio]) {
+                  nextState[activePortfolio] = {};
+                }
+
+                const currentContracts =
+                  nextState[activePortfolio][expectedSymbol] ?? 0;
+                nextState[activePortfolio] = {
+                  ...nextState[activePortfolio],
+                  [expectedSymbol]: currentContracts + amount,
+                };
+
+                return nextState;
+              });
             }}
             disabled={latestMark <= 0 || isExpired}
           >

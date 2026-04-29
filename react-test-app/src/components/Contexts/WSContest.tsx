@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { getAccessToken } from "../../auth/token";
 import { BalancePoint, useBalanceContext } from "./BalanceContext";
 import { CompanyStats, useCompanyContext } from "./CompanyContext";
 import { OptionPoint, useOptionContext } from "./OptionContext";
@@ -67,7 +68,10 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
   } = useStockContext();
 
   useEffect(() => {
-    ws.current = new WebSocket(`ws://localhost:8080/connect?id=${clientID}`);
+    const token = getAccessToken();
+    ws.current = new WebSocket(
+      `ws://localhost:8080/connect?id=${clientID}&token=${encodeURIComponent(token ?? "")}`,
+    );
 
     ws.current.onopen = () => {
       console.log(`Websocket connected ${clientID}`);
