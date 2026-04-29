@@ -35,7 +35,7 @@ const OptionsSearchBar: React.FC<OptionsSearchBarProps> = ({
       className="d-flex align-items-center gap-1"
       style={{
         flex: "1 1 auto",
-        backgroundColor: "transparent",
+        backgroundColor: COLORS.transparent,
       }}
     >
       <input

@@ -55,7 +55,7 @@ export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
           label: "STRATEGY_VALUATION",
           data: userPoints,
           borderColor: COLORS.green.positive, // Use a bright color for the user
-          backgroundColor: "rgba(0, 255, 0, 0.1)",
+          backgroundColor: COLORS.overlays.success10,
           borderWidth: 2,
           tension: 0.1,
           pointRadius: 0,
@@ -115,7 +115,7 @@ export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
             unit: "month" as const,
             displayFormats: { month: "MMM yyyy" },
           },
-          grid: { color: "rgba(255, 255, 255, 0.05)" },
+          grid: { color: COLORS.overlays.gridLight },
           ticks: {
             color: COLORS.infoTextColor,
             font: { family: "monospace", size: 10 },
@@ -123,7 +123,7 @@ export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
         },
         y: {
           type: "linear" as const,
-          grid: { color: "rgba(255, 255, 255, 0.05)" },
+          grid: { color: COLORS.overlays.gridLight },
           ticks: {
             color: COLORS.infoTextColor,
             font: { family: "monospace", size: 10 },
@@ -157,7 +157,7 @@ export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
             padding: "2px 8px",
             fontSize: "0.7rem",
             border: "1px solid " + COLORS.borderColor,
-            background: "transparent",
+            background: COLORS.transparent,
             cursor: "pointer",
             marginBottom: "10px", // Space between button and the text below
           }}
@@ -197,7 +197,7 @@ export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
               padding: "2px 8px",
               fontSize: "0.7rem",
               border: "1px solid" + COLORS.borderColor,
-              background: "transparent",
+              background: COLORS.transparent,
             }}
           >
             ←
@@ -227,7 +227,7 @@ export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
       <div
         style={{
           borderTop: `1px solid ${COLORS.cardSoftBorder}`,
-          background: "#0a0a0a", // Slightly darker for the footer
+          background: COLORS.neutrals.n0a, // Slightly darker for the footer
           transition: "all 0.3s ease",
           flexShrink: 0, // CRITICAL: Prevents the footer from being pushed out of view
         }}
@@ -244,7 +244,7 @@ export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
             fontSize: "9px",
             color: COLORS.infoTextColor,
             fontFamily: "monospace",
-            backgroundColor: "#111", // Distinct color so you can see the bar
+            backgroundColor: COLORS.neutrals.n111, // Distinct color so you can see the bar
             borderBottom: isExpanded
               ? `1px solid ${COLORS.cardSoftBorder}`
               : "none",

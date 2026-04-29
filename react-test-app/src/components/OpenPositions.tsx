@@ -106,13 +106,13 @@ export const IdCards: React.FC<IdCardProps> = ({
         padding: "0",
         maxHeight: "100%",
         overflowY: "auto",
-        backgroundColor: "#000000",
+        backgroundColor: COLORS.appBackground,
       }}
     >
       {Object.keys(ids).length === 0 ? (
         <div
           style={{
-            color: "#444",
+            color: COLORS.neutrals.n444,
             padding: "24px",
             fontSize: "0.75rem",
             textTransform: "uppercase",

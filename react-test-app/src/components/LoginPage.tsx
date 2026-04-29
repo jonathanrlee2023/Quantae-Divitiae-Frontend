@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { COLORS } from "../constants/Colors";
 import { MetalText } from "./MetalText";
+import { setAccessToken } from "../auth/token";
+import { apiFetch } from "../api/client";
 
 interface LoginProps {
   onLogin: (userId: number) => void;
@@ -15,7 +17,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onGoToRegister }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
+      const response = await apiFetch("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -23,6 +25,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onGoToRegister }) => {
 
       if (response.ok) {
         const data = await response.json();
+        if (typeof data?.access_token === "string" && data.access_token) {
+          setAccessToken(data.access_token);
+        }
         onLogin(data.user_id);
       } else {
         const errorText = await response.text();

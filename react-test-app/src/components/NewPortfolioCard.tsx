@@ -59,17 +59,17 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
           border: isStaged
             ? "1px solid " + COLORS.secondaryTextColor
             : "1px solid " + COLORS.borderColor,
-          boxShadow: isStaged ? "0 0 10px rgba(126, 124, 243, 0.1)" : "none",
+          boxShadow: isStaged ? `0 0 10px ${COLORS.overlays.purple10}` : "none",
         }}
         onMouseEnter={(e) => {
           // 3. Apply the "Pop" effect
           e.currentTarget.style.transform = "scale(1.005) translateY(-2px)";
-          e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.4)";
+          e.currentTarget.style.boxShadow = `0 8px 16px ${COLORS.overlays.black40}`;
         }}
         onMouseLeave={(e) => {
           // 4. Reset to original state
           e.currentTarget.style.transform = "scale(1) translateY(0)";
-          e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+          e.currentTarget.style.boxShadow = `0 2px 4px ${COLORS.overlays.black20}`;
         }}
       >
         <div
@@ -157,7 +157,7 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
         display: "flex",
         flexDirection: "column",
         height: "94%",
-        background: "#0d0d0d", // Darker slate for focus
+        background: COLORS.neutrals.n0d, // Darker slate for focus
       }}
     >
       {/* --- Header: Dynamic Title --- */}

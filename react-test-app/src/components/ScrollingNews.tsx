@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { useBalanceContext } from "./Contexts/BalanceContext";
 import { useOptionContext } from "./Contexts/OptionContext";
 import "./CustomCSS/NewsTicker.css";
+import { COLORS } from "../constants/Colors";
 
 interface NewsTickerProps {
   activeCard: string;
@@ -44,7 +45,7 @@ const NewsTicker: React.FC<NewsTickerProps> = ({ activeCard, activeStock }) => {
       <div className="ticker-wrap">
         <div
           className="ticker__item mx-auto"
-          style={{ opacity: 1, fontWeight: "bold", color: "white" }}
+          style={{ opacity: 1, fontWeight: "bold", color: COLORS.white }}
         >
           SYSTEM_READY // NO_SIGNALS_
           {activeCard === "home" ? "GLOBAL" : activeStock}

@@ -89,7 +89,7 @@ export const FinancialsCard: React.FC<FinancialsCardProps> = ({
                 padding: "2px 8px",
                 fontSize: "0.7rem",
                 border: "1px solid" + COLORS.borderColor,
-                background: "transparent",
+                background: COLORS.transparent,
               }}
             >
               ←
@@ -146,7 +146,7 @@ export const FinancialsCard: React.FC<FinancialsCardProps> = ({
                   fontWeight: "700",
                   letterSpacing: "0.05em",
                   backgroundColor:
-                    period === p ? COLORS.secondaryTextColor : "transparent",
+                    period === p ? COLORS.secondaryTextColor : COLORS.transparent,
                   color:
                     period === p ? COLORS.appBackground : COLORS.infoTextColor,
                 }}
@@ -183,7 +183,7 @@ export const FinancialsCard: React.FC<FinancialsCardProps> = ({
                   borderBottom:
                     reportType === r
                       ? "2px solid" + COLORS.secondaryTextColor
-                      : "2px solid transparent",
+                      : `2px solid ${COLORS.transparent}`,
                   paddingBottom: "4px",
                 }}
                 onMouseEnter={(e) => {

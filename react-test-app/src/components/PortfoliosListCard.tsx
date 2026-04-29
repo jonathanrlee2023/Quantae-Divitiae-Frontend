@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useBalanceContext } from "./Contexts/BalanceContext";
 import { useWS } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
+import { apiFetch } from "../api/client";
 
 interface PortfolioCardsProps {
   setActiveCard: (query: string) => void;
@@ -30,9 +31,8 @@ export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       try {
-        const baseUrl = "http://localhost:8080";
-        const response = await fetch(
-          `${baseUrl}/deletePortfolio?id=${pid}&client_id=${clientID}`,
+        const response = await apiFetch(
+          `/deletePortfolio?id=${pid}&client_id=${clientID}`,
           {
             method: "DELETE",
             signal: controller.signal,
@@ -72,10 +72,10 @@ export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
           cursor: "pointer",
           padding: "12px",
           borderRadius: "4px",
-          backgroundColor: isActive ? COLORS.dynamic.hover : "transparent",
+          backgroundColor: isActive ? COLORS.dynamic.hover : COLORS.transparent,
           border: isActive
             ? "1px solid " + COLORS.borderColor
-            : "1px solid transparent",
+            : `1px solid ${COLORS.transparent}`,
           borderLeft: isActive
             ? "3px solid " + COLORS.secondaryTextColor
             : "3px solid" + COLORS.borderColor,
@@ -92,7 +92,7 @@ export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
         }}
         onMouseLeave={(e) => {
           if (!isActive) {
-            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.backgroundColor = COLORS.transparent;
           } else {
             e.currentTarget.style.backgroundColor = COLORS.dynamic.hover;
           }
@@ -189,16 +189,16 @@ export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
         display: "flex",
         flexDirection: "column",
         height: "94%",
-        background: "#0a0a0a", // Deeper black for sidebar contrast
-        borderRight: "1px solid #222",
+        background: COLORS.neutrals.n0a, // Deeper black for sidebar contrast
+        borderRight: `1px solid ${COLORS.neutrals.n222}`,
       }}
     >
       {/* --- Header Section --- */}
       <div
         style={{
           padding: "16px",
-          borderBottom: "1px solid #222",
-          backgroundColor: "#0f0f0f",
+          borderBottom: `1px solid ${COLORS.neutrals.n222}`,
+          backgroundColor: COLORS.neutrals.n0f,
         }}
       >
         <h3

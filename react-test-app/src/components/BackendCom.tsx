@@ -1,4 +1,5 @@
 import { Position } from "./Contexts/StreamActionsContext";
+import { apiFetch } from "../api/client";
 
 interface OptionParts {
   ticker: string;
@@ -19,7 +20,7 @@ export const postData = async (
   const data = { id: ID, price, amount, portfolio_id, client_id: clientID };
 
   try {
-    const response = await fetch(`http://localhost:8080/${openOrClose}`, {
+    const response = await apiFetch(`/${openOrClose}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +53,7 @@ export const CreatePortfolio = async (
   };
 
   try {
-    const response = await fetch(`http://localhost:8080/newPortfolio`, {
+    const response = await apiFetch("/newPortfolio", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +115,7 @@ export const ModifyTracker = async (action: string, id: string) => {
   let data: { id: string } = { id: id };
 
   try {
-    const response = await fetch(`http://localhost:8080/${action}`, {
+    const response = await apiFetch(`/${action}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

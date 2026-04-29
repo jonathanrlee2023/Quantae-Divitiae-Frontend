@@ -15,7 +15,6 @@ export const StockCard: React.FC<FixedOptionCardProps> = ({
   const { previousCard } = useWS();
   return (
     <div
-      className="bg-black text-white"
       style={{
         width: "100%",
         height: "100vh", // Use full viewport height
@@ -38,7 +37,7 @@ export const StockCard: React.FC<FixedOptionCardProps> = ({
             style={{
               padding: "4px 12px",
               fontSize: "0.8rem",
-              backgroundColor: "transparent",
+              backgroundColor: COLORS.transparent,
               border: "1px solid " + COLORS.borderColor,
             }}
           >

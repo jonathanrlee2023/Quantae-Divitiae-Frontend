@@ -12,7 +12,6 @@ import { WSProvider } from "./components/Contexts/WSContest";
 import Login from "./components/LoginPage";
 import Register from "./components/CreateLoginPage";
 import { MetalFilter } from "./components/MetalFilter";
-import { on } from "events";
 
 const Main = () => {
   const [userId, setUserId] = useState<number | null>(null);

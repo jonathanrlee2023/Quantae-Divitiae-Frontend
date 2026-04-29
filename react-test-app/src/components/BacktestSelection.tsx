@@ -2,6 +2,7 @@ import React, { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { useStockContext } from "./Contexts/StockContext";
 import { useWS } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
+import { apiFetch } from "../api/client";
 
 type BacktestSelectionProps = {
   setActiveCard: (query: string) => void;
@@ -53,7 +54,7 @@ export const BacktestSelection: React.FC<BacktestSelectionProps> = ({
     };
 
     // Use your existing fetch logic redirected to your Go backtest endpoint
-    await fetch(`http://localhost:8080/startBacktest`, {
+    await apiFetch(`/startBacktest`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -98,7 +99,7 @@ export const BacktestSelection: React.FC<BacktestSelectionProps> = ({
             right: "10px", // Pinned to the right
             background: "none",
             border: "none",
-            color: "#ff4444", // Bright Red
+            color: COLORS.status.warningText, // Bright Red
             fontSize: "12px",
             fontWeight: "bold",
             padding: "5px",
@@ -129,7 +130,7 @@ export const BacktestSelection: React.FC<BacktestSelectionProps> = ({
         display: "flex",
         flexDirection: "column",
         height: "94%",
-        background: "#0d0d0d", // Darker slate for focus
+        background: COLORS.neutrals.n0d, // Darker slate for focus
       }}
     >
       <div
@@ -235,7 +236,7 @@ export const BacktestSelection: React.FC<BacktestSelectionProps> = ({
 
 const dateInputStyle: React.CSSProperties = {
   width: "100%",
-  background: "rgba(255, 255, 255, 0.03)", // Subtle depth
+  background: COLORS.overlays.panel, // Subtle depth
   border: `1px solid ${COLORS.borderColor}`,
   color: COLORS.mainFontColor,
   fontFamily: "monospace",
@@ -264,7 +265,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    background: "#0d0d0d",
+    background: COLORS.neutrals.n0d,
   },
   sectionHeader: {
     fontSize: "11px",
@@ -291,7 +292,7 @@ const styles = {
   },
   inputContainer: { display: "flex", alignItems: "center", gap: "5px" },
   weightInput: {
-    background: "#1a1a1a",
+    background: COLORS.cardSoftBorder,
     border: `1px solid ${COLORS.borderColor}`,
     color: COLORS.mainFontColor,
     width: "60px",

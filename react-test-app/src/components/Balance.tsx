@@ -114,7 +114,7 @@ export const BalanceWSComponent: React.FC<BalanceWSProps> = ({
             { x: minX, y: previousPortfolioBalance },
             { x: maxX, y: previousPortfolioBalance },
           ],
-          borderColor: "rgba(200, 0, 0, 0.8)",
+          borderColor: COLORS.status.errorBorder,
           borderWidth: 1,
           pointRadius: 0,
           borderDash: [5, 5],

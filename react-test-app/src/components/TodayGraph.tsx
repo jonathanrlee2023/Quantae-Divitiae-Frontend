@@ -53,7 +53,7 @@ export const verticalLinePlugin = {
       ctx.moveTo(x, yAxis.top);
       ctx.lineTo(x, yAxis.bottom);
       ctx.lineWidth = 1;
-      ctx.strokeStyle = "#333"; // Vertical line color
+      ctx.strokeStyle = COLORS.borderColor; // Vertical line color
       ctx.setLineDash([5, 5]); // Dashed line
       ctx.stroke();
       ctx.restore();
@@ -373,7 +373,7 @@ export const TodayStockWSComponent: React.FC<TodayStockWSProps> = ({
                     backgroundColor:
                       timeframe === tf
                         ? COLORS.secondaryTextColor
-                        : "transparent",
+                        : COLORS.transparent,
                   }}
                 >
                   {buttonLabel}

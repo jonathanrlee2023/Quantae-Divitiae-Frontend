@@ -114,7 +114,7 @@ const App: React.FC = () => {
                 borderBottom:
                   activeCard === item.id
                     ? "2px solid " + COLORS.secondaryTextColor
-                    : "2px solid transparent",
+                    : `2px solid ${COLORS.transparent}`,
                 transition: "all 0.2s ease",
                 padding: "0 4px",
                 height: "100%",

@@ -1,5 +1,6 @@
 // components/MetalText.tsx
 import React from "react";
+import { COLORS } from "../constants/Colors";
 
 interface MetalTextProps {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ interface MetalTextProps {
 
 export const MetalText: React.FC<MetalTextProps> = ({
   children,
-  color = "#a3a000",
+  color = COLORS.yellow.button,
   fontSize = "1rem",
   className = "",
 }) => {

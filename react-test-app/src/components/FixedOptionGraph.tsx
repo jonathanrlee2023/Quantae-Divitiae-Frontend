@@ -24,6 +24,7 @@ import {
   ParseOptionId,
   ModifyTracker,
 } from "./BackendCom";
+import { apiFetch } from "../api/client";
 
 ChartJS.register(
   CategoryScale,
@@ -47,7 +48,7 @@ export const addNewTracker = async (ID: string) => {
   };
 
   try {
-    const response = await fetch("http://localhost:8080/newTracker", {
+    const response = await apiFetch("/newTracker", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -156,7 +157,7 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
             y: p[dataPoint as keyof typeof p] as number,
           })),
           fill: false,
-          borderColor: "rgb(66, 0, 189)",
+          borderColor: COLORS.chartPurple,
           tension: 0,
         },
       ],
@@ -212,22 +213,22 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
             },
           },
           grid: {
-            color: "#111",
-            borderColor: "#222",
+            color: COLORS.neutrals.n111,
+            borderColor: COLORS.neutrals.n222,
           },
           ticks: {
-            color: "#444",
+            color: COLORS.neutrals.n444,
             font: { family: "monospace", size: 9 },
             maxRotation: 0,
           },
         },
         y: {
           grid: {
-            color: "#111",
-            borderColor: "#222",
+            color: COLORS.neutrals.n111,
+            borderColor: COLORS.neutrals.n222,
           },
           ticks: {
-            color: "#444",
+            color: COLORS.neutrals.n444,
             font: { family: "monospace", size: 9 },
             callback: (value: any) =>
               typeof value === "number" ? value.toFixed(4) : value,
@@ -250,7 +251,7 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
         width: "100%",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#000",
+        backgroundColor: COLORS.neutrals.n000,
         overflow: "hidden",
       }}
     >
@@ -261,7 +262,7 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
           width: "100%",
           minHeight: "0",
           position: "relative",
-          borderBottom: "1px solid #111",
+          borderBottom: `1px solid ${COLORS.neutrals.n111}`,
         }}
       >
         <Line
@@ -420,7 +421,10 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
               </button>
               <button
                 className="btn-sleek"
-                style={{ borderColor: "#444", color: "#888" }}
+                style={{
+                  borderColor: COLORS.neutrals.n444,
+                  color: COLORS.neutrals.n888,
+                }}
                 onClick={() => {
                   postData(
                     "closePosition",
@@ -500,11 +504,11 @@ export const FixedOptionWSComponent: React.FC<FixedOptionWSProps> = ({
           <div
             className="px-2 py-1"
             style={{
-              backgroundColor: "#200",
-              border: "1px solid #400",
+              backgroundColor: COLORS.status.criticalBg,
+              border: `1px solid ${COLORS.status.criticalBorder}`,
               fontSize: "0.7rem",
               fontFamily: "monospace",
-              color: "#f55",
+              color: COLORS.status.criticalText,
               textAlign: "center",
             }}
           >

@@ -158,7 +158,7 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
             y: p[dataPoint as keyof typeof p] as number,
           })),
           fill: false,
-          borderColor: "rgb(66, 0, 189)",
+          borderColor: COLORS.chartPurple,
           tension: 0,
         },
       ],
@@ -247,7 +247,7 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
       style={{
         height: "94%",
         width: "100%",
-        backgroundColor: "#000",
+        backgroundColor: COLORS.neutrals.n000,
         overflow: "hidden",
         padding: "0",
       }}
@@ -255,7 +255,7 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
       {/* --- TOP CONTROL ROW: Search & Track --- */}
       <div
         className="d-flex gap-2 p-2 align-items-center"
-        style={{ flex: "0 0 auto", borderBottom: "1px solid #222" }}
+        style={{ flex: "0 0 auto", borderBottom: `1px solid ${COLORS.neutrals.n222}` }}
       >
         <button
           className={`btn-sleek ${isPending ? "btn-loading" : ""}`}
@@ -317,9 +317,9 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
             flex: "0 0 auto",
             fontSize: "0.7rem",
             padding: "4px 12px",
-            backgroundColor: "#1a0000",
-            color: "#ff4444",
-            borderBottom: "1px solid #300",
+            backgroundColor: COLORS.status.warningBg,
+            color: COLORS.status.warningText,
+            borderBottom: `1px solid ${COLORS.status.warningBorder}`,
           }}
         >
           {isExpired && "⚠️ EXPIRED: Actions Disabled"}
@@ -353,8 +353,8 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
         className="p-2 d-flex gap-1 flex-wrap justify-content-center"
         style={{
           flex: "0 0 auto",
-          backgroundColor: "#0a0a0a",
-          borderTop: "1px solid #222",
+          backgroundColor: COLORS.neutrals.n0a,
+          borderTop: `1px solid ${COLORS.neutrals.n222}`,
         }}
       >
         {METRICS.map((g) => {
@@ -368,14 +368,16 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
                 fontSize: "0.65rem",
                 border: isActive
                   ? "1px solid COLORS.secondaryTextColor"
-                  : "1px solid #333",
+                  : `1px solid ${COLORS.neutrals.n333}`,
               }}
               onClick={() => setDataPoint(g)}
             >
-              <span style={{ color: "#888" }}>{g.toUpperCase()}:</span>{" "}
+              <span style={{ color: COLORS.neutrals.n888 }}>
+                {g.toUpperCase()}:
+              </span>{" "}
               <span
                 style={{
-                  color: isActive ? COLORS.mainFontColor : "#00ff00",
+                  color: isActive ? COLORS.mainFontColor : COLORS.green.button,
                   fontFamily: "monospace",
                 }}
               >
@@ -391,8 +393,8 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
         className="p-3"
         style={{
           flex: "0 0 auto",
-          backgroundColor: "#000",
-          borderTop: "1px solid #333",
+          backgroundColor: COLORS.neutrals.n000,
+          borderTop: `1px solid ${COLORS.neutrals.n333}`,
         }}
       >
         <div className="d-flex align-items-center gap-3 mb-3">
@@ -410,8 +412,8 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
             onChange={(e) => setAmount(Number(e.target.value))}
             style={{
               width: "80px",
-              backgroundColor: "#111",
-              border: "1px solid #444",
+              backgroundColor: COLORS.neutrals.n111,
+              border: `1px solid ${COLORS.neutrals.n444}`,
               color: COLORS.mainFontColor,
               textAlign: "center",
             }}
@@ -420,7 +422,10 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
             <div className="text-secondary small">LATEST MARK</div>
             <div
               className="fw-bold"
-              style={{ color: latestMark > 0 ? "#00ff00" : "#444" }}
+              style={{
+                color:
+                  latestMark > 0 ? COLORS.green.button : COLORS.neutrals.n444,
+              }}
             >
               {latestMark > 0 ? `$${latestMark.toFixed(2)}` : "N/A"}
             </div>

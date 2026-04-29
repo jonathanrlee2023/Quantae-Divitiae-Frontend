@@ -72,9 +72,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                 right: "15px",
                 top: "15px",
                 zIndex: 10,
-                background: "rgba(0,0,0,0.5)",
+                background: COLORS.overlays.black50,
                 border: `1px solid ${COLORS.cardSoftBorder}`,
-                color: "#fff",
+                color: COLORS.white,
                 cursor: "pointer",
                 padding: "5px 10px",
                 fontSize: "0.8rem",
@@ -108,7 +108,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                   height: 8,
                   borderRadius: "50%",
                   background:
-                    view === "balance" ? COLORS.secondaryTextColor : "#333",
+                    view === "balance"
+                      ? COLORS.secondaryTextColor
+                      : COLORS.borderColor,
                 }}
               />
               <div
@@ -117,7 +119,9 @@ export const HomePage: React.FC<HomePageProps> = ({
                   height: 8,
                   borderRadius: "50%",
                   background:
-                    view === "sector" ? COLORS.secondaryTextColor : "#333",
+                    view === "sector"
+                      ? COLORS.secondaryTextColor
+                      : COLORS.borderColor,
                 }}
               />
             </div>

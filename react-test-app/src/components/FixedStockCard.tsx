@@ -122,7 +122,7 @@ export const StockCard: React.FC<FixedStockCardProps> = ({
         display: "flex",
         flexDirection: "column",
         height: "95%", // Use full height
-        backgroundColor: "#000",
+        backgroundColor: COLORS.neutrals.n000,
         color: COLORS.mainFontColor,
         overflow: "hidden",
       }}
@@ -130,7 +130,7 @@ export const StockCard: React.FC<FixedStockCardProps> = ({
       {/* --- Navigation Bar --- */}
       <header
         className="p-2 d-flex align-items-center"
-        style={{ borderBottom: "1px solid #1a1a1a" }}
+        style={{ borderBottom: `1px solid ${COLORS.cardSoftBorder}` }}
       >
         <button
           className="btn-sleek"

@@ -79,7 +79,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       className="d-flex justify-content-center align-items-center px-3 py-2"
       style={{
         backgroundColor: COLORS.cardBackground,
-        borderBottom: "1px solid #1a1a1a",
+        borderBottom: `1px solid ${COLORS.cardSoftBorder}`,
       }}
     >
       <div
@@ -98,7 +98,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
               left: "12px",
               top: "50%",
               transform: "translateY(-50%)",
-              color: "#7e7cf3",
+              color: COLORS.secondaryTextColor,
               fontSize: "0.7rem",
               fontWeight: "900",
               fontFamily: "monospace",
@@ -111,11 +111,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
           <input
             className="search-bar w-100"
             style={{
-              backgroundColor: "#000",
-              border: "1px solid #333",
+              backgroundColor: COLORS.neutrals.n000,
+              border: `1px solid ${COLORS.borderColor}`,
               borderRadius: "2px", // Sharp corners
               padding: "8px 12px 8px 30px",
-              color: "#00ff88", // Active terminal green text
+              color: COLORS.green.button, // Active terminal green text
               height: "38px",
               fontSize: "0.85rem",
               fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
@@ -123,12 +123,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
               transition: "all 0.2s ease",
             }}
             onFocus={(e) => {
-              e.target.style.borderColor = "#7e7cf3";
-              e.target.style.boxShadow = "0 0 8px rgba(126, 124, 243, 0.2)";
+              e.target.style.borderColor = COLORS.secondaryTextColor;
+              e.target.style.boxShadow = COLORS.focusGlow;
               setShowDropdown(true);
             }}
             onBlur={(e) => {
-              e.target.style.borderColor = "#333";
+              e.target.style.borderColor = COLORS.borderColor;
               e.target.style.boxShadow = "none";
             }}
             value={inputValue}
@@ -153,20 +153,20 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 top: "100%",
                 left: 0,
                 right: 0,
-                backgroundColor: "#0a0a0a",
-                border: "1px solid #333",
+                backgroundColor: COLORS.neutrals.n0a,
+                border: `1px solid ${COLORS.borderColor}`,
                 borderTop: "none",
                 zIndex: 10000,
-                boxShadow: "0px 10px 20px rgba(0,0,0,0.6)",
+                boxShadow: `0px 10px 20px ${COLORS.overlays.black60}`,
               }}
             >
               <div
                 style={{
                   padding: "6px 12px",
                   fontSize: "9px",
-                  color: "#444",
+                  color: COLORS.neutrals.n444,
                   fontWeight: "800",
-                  borderBottom: "1px solid #1a1a1a",
+                  borderBottom: `1px solid ${COLORS.cardSoftBorder}`,
                 }}
               >
                 RECENT_QUERIES
@@ -178,17 +178,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   onClick={() => handleSelectRecent(item)}
                   style={{
                     padding: "10px 15px",
-                    color: "#ccc",
+                    color: COLORS.neutrals.nccc,
                     fontSize: "0.8rem",
                     fontFamily: "monospace",
                     cursor: "pointer",
-                    borderBottom: "1px solid #111",
+                    borderBottom: `1px solid ${COLORS.neutrals.n111}`,
                     display: "flex",
                     justifyContent: "space-between",
                   }}
                 >
                   <span>{item}</span>
-                  <span style={{ color: "#333", fontSize: "0.7rem" }}>
+                  <span style={{ color: COLORS.neutrals.n333, fontSize: "0.7rem" }}>
                     SELECT ↵
                   </span>
                 </div>
@@ -205,7 +205,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           height: "38px",
           borderRadius: "2px",
           backgroundColor: COLORS.cardBackground,
-          border: "1px solid #333",
+          border: `1px solid ${COLORS.borderColor}`,
           fontSize: "0.7rem",
           fontWeight: "bold",
           padding: "0 20px",

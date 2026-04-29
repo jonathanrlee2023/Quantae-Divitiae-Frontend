@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useCompanyContext } from "./CompanyContext";
 import { useOptionContext } from "./OptionContext";
 import { useStockContext } from "./StockContext";
+import { apiFetch } from "../../api/client";
 
 export type Position = {
   id: string;
@@ -94,9 +95,8 @@ export const StreamActionsProvider: React.FC<{ children: React.ReactNode }> = ({
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       try {
-        const baseUrl = "http://localhost:8080";
-        const response = await fetch(
-          `${baseUrl}/startOptionStream?symbol=${stockSymbol}&price=${strikePrice}&day=${day}&month=${month}&year=${year}&type=${type}&clientID=${clientID}`,
+        const response = await apiFetch(
+          `/startOptionStream?symbol=${stockSymbol}&price=${strikePrice}&day=${day}&month=${month}&year=${year}&type=${type}&clientID=${clientID}`,
           {
             signal: controller.signal,
           },
@@ -143,9 +143,8 @@ export const StreamActionsProvider: React.FC<{ children: React.ReactNode }> = ({
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       try {
-        const baseUrl = "http://localhost:8080";
-        const response = await fetch(
-          `${baseUrl}/startStockStream?symbol=${cleanSymbol}&clientID=${clientID}&getOptionData=${getOptionData}`,
+        const response = await apiFetch(
+          `/startStockStream?symbol=${cleanSymbol}&clientID=${clientID}&getOptionData=${getOptionData}`,
           {
             signal: controller.signal,
           },

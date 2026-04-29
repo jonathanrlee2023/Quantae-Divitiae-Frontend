@@ -188,14 +188,14 @@ export const OptionExpirationCards: React.FC<OptionExpirationCardsProps> = ({
                 flex: 1,
                 padding: "8px 0",
                 borderRadius: "0px",
-                border: `1px solid ${isActive ? COLORS.borderColor : "transparent"}`,
+                border: `1px solid ${isActive ? COLORS.borderColor : COLORS.transparent}`,
                 cursor: "pointer",
                 fontSize: "10px",
                 fontWeight: "bold",
                 letterSpacing: "1px",
                 backgroundColor: isActive
                   ? COLORS.cardBackground
-                  : "transparent",
+                  : COLORS.transparent,
                 color: isActive ? COLORS.mainFontColor : COLORS.infoTextColor,
                 transition: "all 0.1s",
               }}
@@ -207,7 +207,7 @@ export const OptionExpirationCards: React.FC<OptionExpirationCardsProps> = ({
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
-                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.backgroundColor = COLORS.transparent;
                   e.currentTarget.style.color = COLORS.infoTextColor;
                 }
               }}

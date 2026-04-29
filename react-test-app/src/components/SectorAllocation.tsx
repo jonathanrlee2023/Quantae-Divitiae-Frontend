@@ -50,7 +50,7 @@ const renderActiveShape = (props: any) => {
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
-        style={{ filter: "drop-shadow(0px 4px 10px rgba(0,0,0,0.5))" }}
+        style={{ filter: `drop-shadow(0px 4px 10px ${COLORS.overlays.black50})` }}
       />
       {/* 3B. Outer Decorative Ring */}
       <Sector
@@ -70,7 +70,7 @@ const renderActiveShape = (props: any) => {
         y={cy}
         dy={4}
         textAnchor="middle"
-        fill="#fff"
+        fill={COLORS.white}
         fontSize="1rem"
         fontFamily="monospace"
       >
@@ -81,7 +81,7 @@ const renderActiveShape = (props: any) => {
         y={cy}
         dy={24}
         textAnchor="middle"
-        fill="#aaa"
+        fill={COLORS.neutrals.naaa}
         fontSize="0.75rem"
         fontFamily="monospace"
       >
@@ -120,18 +120,18 @@ export const SectorAllocation: React.FC<SectorAllocationProps> = ({
     });
 
     const colors: Record<string, string> = {
-      TECHNOLOGY: "#0804ff", // Brand Purple
-      "FINANCIAL SERVICES": "#B8860B", // Gold
-      HEALTHCARE: "#888", // Silver
-      "CONSUMER DEFENSIVE": "#4B0082", // Indigo
-      ENERGY: "#167a00", // Dark Steel
-      UTILITIES: "#555", // Graphite
-      INDUSTRIALS: "#FFD700", // Gold
-      "BASIC MATERIALS": "#ff9393", // Silver
-      "COMMUNICATION SERVICES": "#8B0000", // Dark Red
-      "CONSUMER CYCLICAL": "#00BFFF", // Light Blue
-      "REAL ESTATE": "#2F4F4F", // Dark Slate Gray
-      CASH: "#ffffff",
+      TECHNOLOGY: COLORS.sectorPalette.technology,
+      "FINANCIAL SERVICES": COLORS.sectorPalette.financialServices,
+      HEALTHCARE: COLORS.sectorPalette.healthcare,
+      "CONSUMER DEFENSIVE": COLORS.sectorPalette.consumerDefensive,
+      ENERGY: COLORS.sectorPalette.energy,
+      UTILITIES: COLORS.sectorPalette.utilities,
+      INDUSTRIALS: COLORS.sectorPalette.industrials,
+      "BASIC MATERIALS": COLORS.sectorPalette.basicMaterials,
+      "COMMUNICATION SERVICES": COLORS.sectorPalette.communicationServices,
+      "CONSUMER CYCLICAL": COLORS.sectorPalette.consumerCyclical,
+      "REAL ESTATE": COLORS.sectorPalette.realEstate,
+      CASH: COLORS.white,
     };
 
     const data = Object.entries(sectorTotals).map(([name, value]) => ({
@@ -163,7 +163,7 @@ export const SectorAllocation: React.FC<SectorAllocationProps> = ({
         borderRadius: "0",
         fontFamily: "monospace",
         backgroundColor: COLORS.cardBackground,
-        boxShadow: "inset 0px 0px 15px rgba(0,0,0,0.8)",
+        boxShadow: `inset 0px 0px 15px ${COLORS.overlays.black80}`,
         display: "flex", // ADD THIS: To make internal card-body flex
         flexDirection: "column",
       }}
@@ -175,7 +175,7 @@ export const SectorAllocation: React.FC<SectorAllocationProps> = ({
         >
           Sector Allocation
         </h6>
-        <span style={{ fontSize: "0.8rem", color: "#aaa" }}>
+        <span style={{ fontSize: "0.8rem", color: COLORS.neutrals.naaa }}>
           NAV: ${balance.toLocaleString()}
         </span>
       </div>
@@ -195,7 +195,7 @@ export const SectorAllocation: React.FC<SectorAllocationProps> = ({
               dataKey="value"
               onMouseEnter={(_, index) => setActiveIndex(index)}
               onMouseLeave={() => setActiveIndex(undefined)}
-              stroke="#000"
+              stroke={COLORS.neutrals.n000}
               strokeWidth={1}
             >
               {chartData.map((entry, index) => (

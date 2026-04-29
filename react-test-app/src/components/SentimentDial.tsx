@@ -59,7 +59,7 @@ const SentimentDial: React.FC<SentimentDialProps> = ({
   return (
     <div
       className="d-flex flex-column align-items-center my-3"
-      style={{ width: "100%", backgroundColor: "transparent" }}
+      style={{ width: "100%", backgroundColor: COLORS.transparent }}
     >
       <svg
         width={width}
@@ -84,7 +84,7 @@ const SentimentDial: React.FC<SentimentDialProps> = ({
               y1={cy + (r - 10) * Math.sin((angle * Math.PI) / 180)}
               x2={cx + (r + 5) * Math.cos((angle * Math.PI) / 180)}
               y2={cy + (r + 5) * Math.sin((angle * Math.PI) / 180)}
-              stroke="#333"
+              stroke={COLORS.borderColor}
               strokeWidth="1"
             />
           );
@@ -108,7 +108,7 @@ const SentimentDial: React.FC<SentimentDialProps> = ({
           y1={cy}
           x2={cx}
           y2={cy - r + 5}
-          stroke="#ffffff"
+          stroke={COLORS.white}
           strokeWidth="2"
           transform={`rotate(${rotation}, ${cx}, ${cy})`}
           style={{
@@ -124,7 +124,13 @@ const SentimentDial: React.FC<SentimentDialProps> = ({
           height="8"
           fill={COLORS.mainFontColor}
         />
-        <rect x={cx - 2} y={cy - 2} width="4" height="4" fill="#000" />
+        <rect
+          x={cx - 2}
+          y={cy - 2}
+          width="4"
+          height="4"
+          fill={COLORS.neutrals.n000}
+        />
       </svg>
 
       <div className="text-center" style={{ marginTop: "-20px" }}>
@@ -145,14 +151,14 @@ const SentimentDial: React.FC<SentimentDialProps> = ({
         <div
           style={{
             fontSize: "0.65rem",
-            color: "#555",
+            color: COLORS.neutrals.n555,
             fontFamily: "monospace",
             marginTop: "4px",
             fontWeight: "bold",
           }}
         >
           NUMBER OF ANALYST RATINGS:{" "}
-          <span style={{ color: "#aaa" }}>{total}</span>
+          <span style={{ color: COLORS.neutrals.naaa }}>{total}</span>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { COLORS } from "../constants/Colors";
+import { apiFetch } from "../api/client";
 
 interface LoginProps {
   onLogin: (userId: number) => void;
@@ -18,7 +19,7 @@ const Register: React.FC<LoginProps> = ({ onLogin, onBackToLogin }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/register", {
+      const response = await apiFetch("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

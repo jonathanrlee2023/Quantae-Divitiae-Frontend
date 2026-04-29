@@ -1,3 +1,5 @@
+import { COLORS } from "../constants/Colors";
+
 export const MetalFilter = () => (
   <svg
     width="0"
@@ -21,7 +23,7 @@ export const MetalFilter = () => (
           surfaceScale="7" // Increased for more "height"
           specularConstant={0.9} // Higher shine
           specularExponent={25} // Sharper light spots
-          lightingColor="#ffffff" // Brighter white for highlights
+          lightingColor={COLORS.white} // Brighter white for highlights
           result="specOut"
         >
           <fePointLight x={-5000} y={-10000} z={20000} />
