@@ -5,9 +5,9 @@ import { useOptionContext } from "./Contexts/OptionContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
 import { COLORS } from "../constants/Colors";
 import { ParseOptionId } from "./BackendCom";
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
 interface OptionExpirationCardsProps {
-  setActiveID: (query: string) => void;
-  setActiveCard: (query: string) => void;
   stock: string;
   defaultMessage: string;
   optionExpirations: Record<string, InitialCompanyData>;
@@ -27,13 +27,13 @@ export const formatFriendlyId = (id: string): string => {
 };
 
 export const OptionExpirationCards: React.FC<OptionExpirationCardsProps> = ({
-  setActiveID,
-  setActiveCard,
   stock,
   defaultMessage,
   optionExpirations,
   prevCard,
 }) => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { setFixedID: setActiveID } = useSelection();
   const { optionPoints } = useOptionContext();
   const { startOptionStream } = useStreamActionsContext();
   const { setPreviousCard, clientID } = useWS();

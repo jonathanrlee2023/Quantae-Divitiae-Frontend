@@ -3,13 +3,12 @@ import { useBalanceContext } from "./Contexts/BalanceContext";
 import { useOptionContext } from "./Contexts/OptionContext";
 import "./CustomCSS/NewsTicker.css";
 import { COLORS } from "../constants/Colors";
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
 
-interface NewsTickerProps {
-  activeCard: string;
-  activeStock: string;
-}
-
-const NewsTicker: React.FC<NewsTickerProps> = ({ activeCard, activeStock }) => {
+const NewsTicker: React.FC = () => {
+  const { activeCard } = useNavigation();
+  const { activeStock } = useSelection();
   const { news: globalNews } = useBalanceContext();
   const { optionExpirations } = useOptionContext();
 

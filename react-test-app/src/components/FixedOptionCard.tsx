@@ -1,18 +1,15 @@
 import { FixedOptionWSComponent } from "./FixedOptionGraph";
-import { useWS } from "./Contexts/WSContest";
+import { useWSData } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
-interface FixedOptionCardProps {
-  setActiveCard: (query: string) => void;
-  fixedID: string;
-  activePortfolio: number;
-}
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
-export const StockCard: React.FC<FixedOptionCardProps> = ({
-  setActiveCard,
-  fixedID,
-  activePortfolio,
-}) => {
-  const { previousCard } = useWS();
+export const StockCard: React.FC = () => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { fixedID } = useSelection();
+  const { activePortfolio } = usePortfolioUI();
+  const { previousCard } = useWSData();
   return (
     <div
       style={{

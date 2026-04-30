@@ -3,21 +3,14 @@ import { COLORS } from "../constants/Colors";
 import { BalanceWSComponent } from "./Balance";
 import { IdCards } from "./OpenPositions";
 import { SectorAllocation } from "./SectorAllocation";
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
-interface HomePageProps {
-  setActiveCard: (query: string) => void;
-  setFixedID: (query: string) => void;
-  setActiveStock: (query: string) => void;
-  activeCard: string;
-  activePortfolio: number;
-}
-
-export const HomePage: React.FC<HomePageProps> = ({
-  setActiveCard,
-  setFixedID,
-  setActiveStock,
-  activePortfolio,
-}) => {
+export const HomePage: React.FC = () => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { setFixedID, setActiveStock } = useSelection();
+  const { activePortfolio } = usePortfolioUI();
   const [view, setView] = useState<"balance" | "sector">("balance");
 
   const toggleView = () => {
@@ -160,11 +153,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             }}
           >
             <IdCards
-              setActiveCard={setActiveCard}
-              setActiveID={setFixedID}
-              setActiveStock={setActiveStock}
               defaultMessage="NO OPEN POSITIONS"
-              activePortfolio={activePortfolio}
             />
           </div>
         </div>

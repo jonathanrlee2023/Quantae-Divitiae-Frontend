@@ -3,8 +3,10 @@ import React, {
   ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
+  useCallback,
 } from "react";
 import { getAccessToken } from "../../auth/token";
 import { BalancePoint, useBalanceContext } from "./BalanceContext";
@@ -17,27 +19,34 @@ import {
   useStockContext,
 } from "./StockContext";
 
-interface WSContextValue {
+interface WSActionsContextValue {
   sendMessage: (msg: any) => void;
-  lastMessage: any | null;
-  ids: Record<number, Record<string, number>>;
   setIds: React.Dispatch<
     React.SetStateAction<Record<number, Record<string, number>>>
   >;
-  trackers: string[];
   setTrackers: React.Dispatch<React.SetStateAction<string[]>>;
-  previousBalance: Record<number, number>;
-  previousCard: string;
   setPreviousCard: React.Dispatch<React.SetStateAction<string>>;
-  previousID: string;
   setPreviousID: React.Dispatch<React.SetStateAction<string>>;
-  portfolioNames: Record<number, string>;
   setPortfolioNames: React.Dispatch<
     React.SetStateAction<Record<number, string>>
   >;
   clientID: string;
 }
-const WSContext = createContext<WSContextValue | undefined>(undefined);
+
+interface WSDataContextValue {
+  lastMessage: any | null;
+  ids: Record<number, Record<string, number>>;
+  trackers: string[];
+  previousBalance: Record<number, number>;
+  previousCard: string;
+  previousID: string;
+  portfolioNames: Record<number, string>;
+}
+
+const WSActionsContext = createContext<WSActionsContextValue | undefined>(
+  undefined,
+);
+const WSDataContext = createContext<WSDataContextValue | undefined>(undefined);
 
 interface Props {
   children: ReactNode;
@@ -168,38 +177,75 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
     };
   }, [clientID]);
 
-  const sendMessage = (msg: any) => {
+  const sendMessage = useCallback((msg: any) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       ws.current.send(JSON.stringify(msg));
     }
-  };
+  }, []);
+
+  const actionsValue = useMemo(
+    () => ({
+      sendMessage,
+      setIds,
+      setTrackers,
+      setPreviousCard,
+      setPreviousID,
+      setPortfolioNames,
+      clientID,
+    }),
+    [
+      sendMessage,
+      setIds,
+      setTrackers,
+      setPreviousCard,
+      setPreviousID,
+      setPortfolioNames,
+      clientID,
+    ],
+  );
+
+  const dataValue = useMemo(
+    () => ({
+      lastMessage,
+      ids,
+      trackers,
+      previousBalance,
+      previousCard,
+      previousID,
+      portfolioNames,
+    }),
+    [
+      lastMessage,
+      ids,
+      trackers,
+      previousBalance,
+      previousCard,
+      previousID,
+      portfolioNames,
+    ],
+  );
 
   return (
-    <WSContext.Provider
-      value={{
-        sendMessage,
-        lastMessage,
-        ids,
-        setIds,
-        trackers,
-        setTrackers,
-        previousBalance,
-        previousCard,
-        setPreviousCard,
-        previousID,
-        setPreviousID,
-        portfolioNames,
-        setPortfolioNames,
-        clientID,
-      }}
-    >
-      {children}
-    </WSContext.Provider>
+    <WSActionsContext.Provider value={actionsValue}>
+      <WSDataContext.Provider value={dataValue}>{children}</WSDataContext.Provider>
+    </WSActionsContext.Provider>
   );
 };
 
 export const useWS = () => {
-  const ctx = useContext(WSContext);
-  if (!ctx) throw new Error("useWS must be used within WSProvider");
+  const actions = useWSActions();
+  const data = useWSData();
+  return { ...actions, ...data };
+};
+
+export const useWSActions = () => {
+  const ctx = useContext(WSActionsContext);
+  if (!ctx) throw new Error("useWSActions must be used within WSProvider");
+  return ctx;
+};
+
+export const useWSData = () => {
+  const ctx = useContext(WSDataContext);
+  if (!ctx) throw new Error("useWSData must be used within WSProvider");
   return ctx;
 };

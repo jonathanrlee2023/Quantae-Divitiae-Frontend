@@ -1,19 +1,14 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import OptionsSearchBar from "./OptionsSearchBar";
 import { OptionWSComponent } from "./OptionGraph";
 import { COLORS } from "../constants/Colors";
+import { useNavigation } from "../state/NavigationContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
-interface OptionCardProps {
-  setActiveCard: (query: string) => void;
-  activePortfolio: number;
-}
-
-export const OptionCard: React.FC<OptionCardProps> = ({
-  setActiveCard,
-  activePortfolio,
-}) => {
+export const OptionCard: React.FC = () => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { activePortfolio } = usePortfolioUI();
   const [underlyingStock, setUnderlyingStock] = useState<string>("");
   const [optionDay, setOptionDay] = useState<string>("");
   const [optionMonth, setOptionMonth] = useState<string>("");

@@ -10,25 +10,24 @@ import {
 import { useWS } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
 import { ModifyTracker } from "./BackendCom";
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
 interface StockCardProps {
-  setActiveCard: (query: string) => void;
   setNewStocks: Dispatch<SetStateAction<Record<string, Position>>>;
-  activeCard: string;
-  activePortfolio: number;
 }
 
 export const StockToPortfolioCard: React.FC<StockCardProps> = ({
-  setActiveCard,
-  activeCard,
   setNewStocks,
-  activePortfolio,
 }) => {
+  const { activeCard, goTo: setActiveCard } = useNavigation();
+  const { activeStock, setActiveStock } = useSelection();
+  const { activePortfolio } = usePortfolioUI();
   const { ids, previousID, setPreviousID, clientID } = useWS();
   const [amount, setAmount] = useState<number>(0);
   const [dollarValue, setDollarValue] = useState<number>(0); // Cash
 
-  const [activeStock, setActiveStock] = useState<string>(previousID || ""); // Persistent state for search query
   const { stockPoints } = useStockContext();
   const { balancePoints } = useBalanceContext();
   const { startStockStream } = useStreamActionsContext();
@@ -119,6 +118,10 @@ export const StockToPortfolioCard: React.FC<StockCardProps> = ({
       );
     }
   }, [latestMark, totalAccountValue]);
+
+  useEffect(() => {
+    if (previousID && !activeStock) setActiveStock(previousID);
+  }, [previousID, activeStock, setActiveStock]);
   return (
     <div
       style={{
@@ -180,11 +183,7 @@ export const StockToPortfolioCard: React.FC<StockCardProps> = ({
               position: "relative", // Helps absolute-positioned charts stay inside
             }}
           >
-            <TodayStockWSComponent
-              stockSymbol={activeStock}
-              setActiveCard={setActiveCard}
-              activeCard={activeCard}
-            />
+            <TodayStockWSComponent stockSymbol={activeStock} />
           </div>
 
           {/* --- Trading Controls Panel --- */}

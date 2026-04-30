@@ -14,6 +14,7 @@ import {
 import "chartjs-adapter-date-fns";
 import { COLORS } from "../constants/Colors";
 import { useStockContext, BacktestPoint } from "./Contexts/StockContext"; // Import the types we made
+import { useNavigation } from "../state/NavigationContext";
 
 ChartJS.register(
   CategoryScale,
@@ -26,13 +27,8 @@ ChartJS.register(
   Legend,
 );
 
-interface BacktestGraphProps {
-  setActiveCard: (query: string) => void;
-}
-
-export const BacktestGraphComponent: React.FC<BacktestGraphProps> = ({
-  setActiveCard,
-}) => {
+export const BacktestGraphComponent: React.FC = () => {
+  const { goTo: setActiveCard } = useNavigation();
   const { backtestPayload: data } = useStockContext();
   const [isExpanded, setIsExpanded] = useState(true); // Toggle state
 

@@ -4,7 +4,7 @@ import { on } from "process";
 import { useButtons } from "./ButtonContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
 import "../../App.css";
-import { useWS } from "./Contexts/WSContest";
+import { useWSActions } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
 import { get } from "http";
 
@@ -35,7 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const searchContainerRef = useRef<HTMLDivElement>(null); // To detect clicks outside
   const { buttons, setButtons } = useButtons();
   const { pendingRequests } = useStreamActionsContext();
-  const { clientID } = useWS();
+  const { clientID } = useWSActions();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

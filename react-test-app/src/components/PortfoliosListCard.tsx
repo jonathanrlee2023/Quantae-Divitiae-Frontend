@@ -1,23 +1,17 @@
 import React, { useCallback } from "react";
 import { useBalanceContext } from "./Contexts/BalanceContext";
-import { useWS } from "./Contexts/WSContest";
+import { useWSActions, useWSData } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
 import { apiFetch } from "../api/client";
+import { useNavigation } from "../state/NavigationContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
-interface PortfolioCardsProps {
-  setActiveCard: (query: string) => void;
-  setActivePortfolio: (id: number) => void;
-  activePortfolio: number;
-}
-
-export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
-  setActiveCard,
-  setActivePortfolio,
-  activePortfolio,
-}) => {
+export const PortfolioCards: React.FC = () => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { activePortfolio, setActivePortfolio } = usePortfolioUI();
   const { balancePoints } = useBalanceContext();
-  const { clientID, setIds, setPortfolioNames } = useWS();
-  const { portfolioNames } = useWS();
+  const { clientID, setIds, setPortfolioNames } = useWSActions();
+  const { portfolioNames } = useWSData();
 
   const portfolioIds = Object.keys(portfolioNames).map(Number);
 
@@ -40,6 +34,23 @@ export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
         );
 
         if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        setPortfolioNames((prev) => {
+          if (!(pid in prev)) return prev;
+          const next = { ...prev };
+          delete next[pid];
+          return next;
+        });
+        setIds((prev) => {
+          if (!(pid in prev)) return prev;
+          const next = { ...prev };
+          delete next[pid];
+          return next;
+        });
+        if (activePortfolio === pid) {
+          setActivePortfolio(1);
+          setActiveCard("home");
+        }
       } catch (err: any) {
         if (err.name === "AbortError") {
           console.error(`Deletion of Portfolio ${pid} timed out`);
@@ -50,7 +61,7 @@ export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
         clearTimeout(timeoutId);
       }
     },
-    [setIds, setPortfolioNames],
+    [activePortfolio, setActiveCard, setActivePortfolio, setIds, setPortfolioNames],
   );
 
   const PortfolioCard = ({
@@ -167,7 +178,7 @@ export const PortfolioCards: React.FC<PortfolioCardsProps> = ({
                 background: "none",
                 border: "none",
                 color: COLORS.infoTextColor,
-                fontSize: "10px",
+                fontSize: "50px",
                 padding: "0",
               }}
               onClick={(e) => {

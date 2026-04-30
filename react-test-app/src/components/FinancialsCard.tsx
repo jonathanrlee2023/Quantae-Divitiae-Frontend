@@ -9,7 +9,8 @@ import {
 } from "./Contexts/CompanyContext";
 import { FinancialGrid } from "./FinancialGrid";
 import { COLORS } from "../constants/Colors";
-import { useWS } from "./Contexts/WSContest";
+import { useWSData } from "./Contexts/WSContest";
+import { useNavigation } from "../state/NavigationContext";
 
 type Period = "Annual" | "Quarterly";
 type ReportType = "Income" | "Balance" | "Cash" | "Earnings";
@@ -43,17 +44,12 @@ const getActiveReport = (
   const key = REPORT_MAP[period][type];
   return (stats[key] as FinancialData) ?? [];
 };
-interface FinancialsCardProps {
-  setActiveCard: (query: string) => void;
-}
-
-export const FinancialsCard: React.FC<FinancialsCardProps> = ({
-  setActiveCard,
-}) => {
+export const FinancialsCard: React.FC = () => {
+  const { goTo: setActiveCard } = useNavigation();
   const [period, setPeriod] = useState<Period>("Annual");
   const [reportType, setReportType] = useState<ReportType>("Income");
   const { companyStats } = useCompanyContext();
-  const { previousID, previousCard } = useWS();
+  const { previousID, previousCard } = useWSData();
 
   const stats = companyStats[previousID];
   const activeData = getActiveReport(stats, period, reportType);

@@ -22,6 +22,7 @@ import { useOptionContext } from "./Contexts/OptionContext";
 import { useCompanyContext } from "./Contexts/CompanyContext";
 import SentimentDial from "./SentimentDial";
 import { COLORS } from "../constants/Colors";
+import { useNavigation } from "../state/NavigationContext";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -35,8 +36,6 @@ ChartJS.register(
 
 interface TodayStockWSProps {
   stockSymbol: string;
-  setActiveCard: (query: string) => void;
-  activeCard: string;
 }
 
 type Timeframe = "Live" | "1W" | "1M" | "3M" | "1Y" | "3Y" | "All";
@@ -63,9 +62,8 @@ export const verticalLinePlugin = {
 
 export const TodayStockWSComponent: React.FC<TodayStockWSProps> = ({
   stockSymbol,
-  setActiveCard,
-  activeCard,
 }) => {
+  const { activeCard, goTo: setActiveCard } = useNavigation();
   const [timeframe, setTimeframe] = useState<Timeframe>("Live");
 
   const { stockPoints, historicalStockPoints } = useStockContext();

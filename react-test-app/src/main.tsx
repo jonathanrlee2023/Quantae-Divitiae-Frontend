@@ -12,6 +12,9 @@ import { WSProvider } from "./components/Contexts/WSContest";
 import Login from "./components/LoginPage";
 import Register from "./components/CreateLoginPage";
 import { MetalFilter } from "./components/MetalFilter";
+import { NavigationProvider } from "./state/NavigationContext";
+import { SelectionProvider } from "./state/SelectionContext";
+import { PortfolioUIProvider } from "./state/PortfolioUIContext";
 
 const Main = () => {
   const [userId, setUserId] = useState<number | null>(null);
@@ -47,7 +50,13 @@ const Main = () => {
               <StreamActionsProvider>
                 <WSProvider clientID={`STOCK_CLIENT_${userId}`}>
                   <MetalFilter />
-                  <App />
+                  <NavigationProvider>
+                    <SelectionProvider>
+                      <PortfolioUIProvider>
+                        <App />
+                      </PortfolioUIProvider>
+                    </SelectionProvider>
+                  </NavigationProvider>
                 </WSProvider>
               </StreamActionsProvider>
             </CompanyProvider>

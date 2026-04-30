@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useWS } from "./Contexts/WSContest"; // adjust import
+import { useWSData } from "./Contexts/WSContest"; // adjust import
 import "chartjs-adapter-date-fns";
 import { BalancePoint, useBalanceContext } from "./Contexts/BalanceContext";
 import { COLORS } from "../constants/Colors";
@@ -34,7 +34,7 @@ export const BalanceWSComponent: React.FC<BalanceWSProps> = ({
   activePortfolio,
 }) => {
   const { balancePoints } = useBalanceContext();
-  const { previousBalance } = useWS();
+  const { previousBalance } = useWSData();
   const previousPortfolioBalance = previousBalance[activePortfolio] || 0;
   const portfolioHistory = balancePoints[activePortfolio] || [];
   const latestBalance =

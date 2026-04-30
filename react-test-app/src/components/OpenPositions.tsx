@@ -5,22 +5,20 @@ import { useOptionContext } from "./Contexts/OptionContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
 import { COLORS } from "../constants/Colors";
 import { ParseOptionId } from "./BackendCom";
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
 interface IdCardProps {
-  setActiveID: (query: string) => void;
-  setActiveCard: (query: string) => void;
-  setActiveStock: (query: string) => void;
   defaultMessage: string;
-  activePortfolio: number;
 }
 
 export const IdCards: React.FC<IdCardProps> = ({
-  setActiveID,
-  setActiveStock,
-  setActiveCard,
   defaultMessage,
-  activePortfolio,
 }) => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { setFixedID: setActiveID, setActiveStock } = useSelection();
+  const { activePortfolio } = usePortfolioUI();
   const { ids, setPreviousID, clientID } = useWS();
   const portfolioIds = ids[activePortfolio] ?? {};
   const previousIdsRef = useRef<Record<string, number>>({});
@@ -102,7 +100,7 @@ export const IdCards: React.FC<IdCardProps> = ({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "2px" /* Tight gap for a "list" feel rather than "card" feel */,
+        gap: "2px",
         padding: "0",
         maxHeight: "100%",
         overflowY: "auto",

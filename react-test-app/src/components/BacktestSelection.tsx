@@ -1,21 +1,21 @@
 import React, { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { useStockContext } from "./Contexts/StockContext";
-import { useWS } from "./Contexts/WSContest";
+import { useWSActions } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
 import { apiFetch } from "../api/client";
+import { useNavigation } from "../state/NavigationContext";
 
 type BacktestSelectionProps = {
-  setActiveCard: (query: string) => void;
   setWeights: Dispatch<SetStateAction<Record<string, number>>>;
   weights: Record<string, number>;
 };
 
 export const BacktestSelection: React.FC<BacktestSelectionProps> = ({
-  setActiveCard,
   setWeights,
   weights,
 }) => {
-  const { clientID } = useWS();
+  const { goTo: setActiveCard } = useNavigation();
+  const { clientID } = useWSActions();
   const [startDate, setStartDate] = useState("2023-01-01");
   const { stockPoints, updateBacktestPayload } = useStockContext();
 

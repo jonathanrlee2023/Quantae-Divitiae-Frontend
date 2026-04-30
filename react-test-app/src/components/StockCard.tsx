@@ -9,24 +9,14 @@ import { OptionExpirationCards } from "./OptionExpirationCards";
 import { useWS } from "./Contexts/WSContest";
 import { postData, ModifyTracker } from "./BackendCom";
 import { COLORS } from "../constants/Colors";
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
-interface StockCardProps {
-  setActiveCard: (query: string) => void;
-  setFixedID: (query: string) => void;
-  setActiveStock: (query: string) => void;
-  activeCard: string;
-  activePortfolio: number;
-  activeStock: string;
-}
-
-export const StockCard: React.FC<StockCardProps> = ({
-  setActiveCard,
-  setFixedID,
-  setActiveStock,
-  activeCard,
-  activePortfolio,
-  activeStock,
-}) => {
+export const StockCard: React.FC = () => {
+  const { activeCard, goTo: setActiveCard } = useNavigation();
+  const { activeStock, setActiveStock, setFixedID } = useSelection();
+  const { activePortfolio } = usePortfolioUI();
   const { ids, setIds, clientID, setPreviousID } = useWS();
   const [amount, setAmount] = useState<number>(0);
   const [dollarValue, setDollarValue] = useState<number>(0); // Cash
@@ -174,8 +164,6 @@ export const StockCard: React.FC<StockCardProps> = ({
           >
             <TodayStockWSComponent
               stockSymbol={activeStock}
-              setActiveCard={setActiveCard}
-              activeCard={activeCard}
             />
           </div>
 
@@ -472,8 +460,6 @@ export const StockCard: React.FC<StockCardProps> = ({
             }}
           >
             <OptionExpirationCards
-              setActiveCard={setActiveCard}
-              setActiveID={setFixedID}
               stock={activeStock}
               defaultMessage="INITIALIZING_CHAIN..."
               optionExpirations={optionExpirations}

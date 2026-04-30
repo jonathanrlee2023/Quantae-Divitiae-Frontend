@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Position } from "./components/Contexts/StreamActionsContext";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../App.css";
 import OptionCard from "./components/OptionCard";
 import HomePage from "./components/HomePage";
@@ -14,21 +14,27 @@ import StockToPortfolioCard from "./components/StockToPortfolioCard";
 import { COLORS } from "./constants/Colors";
 import { MetalText } from "./components/MetalText";
 import NewsTicker from "./components/ScrollingNews";
-import { useWS } from "./components/Contexts/WSContest";
+import { useWSData } from "./components/Contexts/WSContest";
 import { useStockContext } from "./components/Contexts/StockContext";
 import { BacktestSelection } from "./components/BacktestSelection";
 import BacktestGraphComponent from "./components/BacktestGraph";
 import BacktestStockCard from "./components/BacktestStockCard";
+import { useNavigation } from "./state/NavigationContext";
+import { useSelection } from "./state/SelectionContext";
+import { usePortfolioUI } from "./state/PortfolioUIContext";
 const App: React.FC = () => {
-  const { previousID } = useWS();
+  const { previousID } = useWSData();
   const { backtestPayload } = useStockContext();
-  const [activeCard, setActiveCard] = useState<string>("home"); // State to track the active screen
-  const [activeStock, setActiveStock] = useState<string>(previousID || ""); // Persistent state for search query
-  const [fixedID, setFixedID] = useState<string>("");
-  const [activePortfolio, setActivePortfolio] = useState<number>(1);
+  const { activeCard, goTo: setActiveCard } = useNavigation();
+  const { activeStock, fixedID, setActiveStock, setFixedID } = useSelection();
+  const { activePortfolio, setActivePortfolio } = usePortfolioUI();
   const [newStocks, setNewStocks] = useState<Record<string, Position>>({});
   const [weights, setWeights] = useState<Record<string, number>>({ Cash: 1.0 });
   const [tempPortfolioName, setTempPortfolioName] = useState<string>("");
+
+  useEffect(() => {
+    if (previousID && !activeStock) setActiveStock(previousID);
+  }, [previousID, activeStock, setActiveStock]);
 
   return (
     <div
@@ -73,7 +79,7 @@ const App: React.FC = () => {
             padding: "0 40px",
           }}
         >
-          <NewsTicker activeCard={activeCard} activeStock={activeStock} />
+          <NewsTicker />
         </div>
 
         {/* RIGHT: Navigation */}
@@ -145,90 +151,53 @@ const App: React.FC = () => {
         }}
       >
         {activeCard === "home" && (
-          <HomePage
-            setActiveCard={setActiveCard}
-            setFixedID={setFixedID}
-            setActiveStock={setActiveStock}
-            activeCard={activeCard}
-            activePortfolio={activePortfolio}
-          />
+          <HomePage />
         )}
         {activeCard === "options" && (
           <OptionCard
-            setActiveCard={setActiveCard}
-            activePortfolio={activePortfolio}
           />
         )}
         {activeCard === "stock" && (
-          <StockCard
-            setActiveCard={setActiveCard}
-            setFixedID={setFixedID}
-            setActiveStock={setActiveStock}
-            activeCard="stock"
-            activePortfolio={activePortfolio}
-            activeStock={activeStock}
-          />
+          <StockCard />
         )}
         {activeCard === "fixedStock" && (
           <FixedStockCard
-            setActiveCard={setActiveCard}
-            setFixedID={setFixedID}
-            activeCard="fixedStock"
-            activePortfolio={activePortfolio}
-            activeStock={activeStock}
           />
         )}
         {activeCard === "fixedOption" && (
           <FixedOptionCard
-            setActiveCard={setActiveCard}
-            fixedID={fixedID}
-            activePortfolio={activePortfolio}
           />
         )}
         {activeCard === "financials" && (
-          <FinancialsCard setActiveCard={setActiveCard} />
+          <FinancialsCard />
         )}
         {activeCard === "portfolioList" && (
-          <PortfolioCards
-            setActiveCard={setActiveCard}
-            setActivePortfolio={setActivePortfolio}
-            activePortfolio={activePortfolio}
-          />
+          <PortfolioCards />
         )}
         {activeCard === "newPortfolio" && (
           <NewPortfolioCard
-            setActiveCard={setActiveCard}
-            setFixedID={setFixedID}
             setNewStocks={setNewStocks}
-            setActivePortfolio={setActivePortfolio}
             setTempPortfolioName={setTempPortfolioName}
             newStocks={newStocks}
-            activePortfolio={activePortfolio}
             tempPortfolioName={tempPortfolioName}
           />
         )}
         {activeCard === "stockToPortfolio" && (
           <StockToPortfolioCard
-            setActiveCard={setActiveCard}
-            activePortfolio={activePortfolio}
             setNewStocks={setNewStocks}
-            activeCard="stockToPortfolio"
           />
         )}
         {activeCard === "backtestSelection" && (
           <BacktestSelection
-            setActiveCard={setActiveCard}
             weights={weights}
             setWeights={setWeights}
           />
         )}
         {activeCard === "backtestGraph" && (
-          <BacktestGraphComponent setActiveCard={setActiveCard} />
+          <BacktestGraphComponent />
         )}
         {activeCard === "backtestStock" && (
           <BacktestStockCard
-            setActiveCard={setActiveCard}
-            activeCard="backtestStock"
             setWeight={setWeights}
             weight={weights}
           />

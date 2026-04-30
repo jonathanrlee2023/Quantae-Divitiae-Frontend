@@ -1,34 +1,33 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Position } from "./Contexts/StreamActionsContext";
 import { useStockContext } from "./Contexts/StockContext";
-import { useWS } from "./Contexts/WSContest";
+import { useWSActions, useWSData } from "./Contexts/WSContest";
 import { COLORS } from "../constants/Colors";
 import { CreatePortfolio } from "./BackendCom";
+import { useNavigation } from "../state/NavigationContext";
+import { useSelection } from "../state/SelectionContext";
+import { usePortfolioUI } from "../state/PortfolioUIContext";
 
 interface NewPortfolioCardProps {
-  setActiveCard: (query: string) => void;
-  setFixedID: (query: string) => void;
   setNewStocks: Dispatch<SetStateAction<Record<string, Position>>>;
-  setActivePortfolio: (id: number) => void;
   setTempPortfolioName: Dispatch<SetStateAction<string>>;
   newStocks: Record<string, Position>;
-  activePortfolio: number;
   tempPortfolioName: string;
 }
 
 export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
-  setActiveCard,
-  setFixedID,
   setNewStocks,
-  setActivePortfolio,
   setTempPortfolioName,
   newStocks,
-  activePortfolio,
   tempPortfolioName,
 }) => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { setFixedID } = useSelection();
+  const { activePortfolio, setActivePortfolio } = usePortfolioUI();
   const { stockPoints } = useStockContext();
-  const { ids, clientID } = useWS();
-  const portfolioIds = ids[activePortfolio];
+  const { clientID, setIds, setPortfolioNames } = useWSActions();
+  const { ids } = useWSData();
+  const portfolioIds = ids[activePortfolio] ?? {};
   const tickerSymbols = Object.keys(portfolioIds);
   const newTickerSymbols = Object.keys(newStocks);
 
@@ -340,15 +339,30 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
             backgroundColor: COLORS.secondaryTextColor,
             color: COLORS.mainFontColor,
           }}
-          onClick={() => {
+          onClick={async () => {
             const positionsArray = Object.values(newStocks);
-            CreatePortfolio(
+            await CreatePortfolio(
               activePortfolio,
               tempPortfolioName,
               clientID,
               positionsArray,
             );
-            // ... rest of your save logic
+            setPortfolioNames((prev) => ({
+              ...prev,
+              [activePortfolio]: tempPortfolioName || prev[activePortfolio] || "",
+            }));
+            setIds((prev) => ({
+              ...prev,
+              [activePortfolio]: positionsArray.reduce<Record<string, number>>(
+                (acc, p) => {
+                  acc[p.id] = (acc[p.id] ?? 0) + p.amount;
+                  return acc;
+                },
+                { ...(prev[activePortfolio] ?? {}) },
+              ),
+            }));
+            setNewStocks({});
+            setTempPortfolioName("");
             setActiveCard("home");
           }}
         >
