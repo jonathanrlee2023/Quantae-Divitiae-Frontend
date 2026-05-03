@@ -11,7 +11,7 @@ import {
   Sector,
   Tooltip,
 } from "recharts";
-import { useWS } from "./Contexts/WSContest";
+import { useWS } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 
 const renderActiveShape = (props: any) => {
@@ -50,7 +50,9 @@ const renderActiveShape = (props: any) => {
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
-        style={{ filter: `drop-shadow(0px 4px 10px ${COLORS.overlays.black50})` }}
+        style={{
+          filter: `drop-shadow(0px 4px 10px ${COLORS.overlays.black50})`,
+        }}
       />
       {/* 3B. Outer Decorative Ring */}
       <Sector

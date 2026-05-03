@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useWS } from "./Contexts/WSContest"; // adjust import
+import { useWS } from "./Contexts/WSContext"; // adjust import
 import "chartjs-adapter-date-fns";
 import { OptionPoint, useOptionContext } from "./Contexts/OptionContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
@@ -255,7 +255,10 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
       {/* --- TOP CONTROL ROW: Search & Track --- */}
       <div
         className="d-flex gap-2 p-2 align-items-center"
-        style={{ flex: "0 0 auto", borderBottom: `1px solid ${COLORS.neutrals.n222}` }}
+        style={{
+          flex: "0 0 auto",
+          borderBottom: `1px solid ${COLORS.neutrals.n222}`,
+        }}
       >
         <button
           className={`btn-sleek ${isPending ? "btn-loading" : ""}`}

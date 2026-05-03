@@ -6,7 +6,7 @@ import { useBalanceContext } from "./Contexts/BalanceContext";
 import { useOptionContext } from "./Contexts/OptionContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
 import { OptionExpirationCards } from "./OptionExpirationCards";
-import { useWS } from "./Contexts/WSContest";
+import { useWS } from "./Contexts/WSContext";
 import { postData, ModifyTracker } from "./BackendCom";
 import { COLORS } from "../constants/Colors";
 import { useNavigation } from "../state/NavigationContext";
@@ -162,9 +162,7 @@ export const StockCard: React.FC = () => {
               marginBottom: "15px",
             }}
           >
-            <TodayStockWSComponent
-              stockSymbol={activeStock}
-            />
+            <TodayStockWSComponent stockSymbol={activeStock} />
           </div>
 
           {/* Execution Terminal Area */}

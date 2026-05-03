@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { Position } from "./Contexts/StreamActionsContext";
 import { useStockContext } from "./Contexts/StockContext";
-import { useWSActions, useWSData } from "./Contexts/WSContest";
+import { useWSActions, useWSData } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 import { CreatePortfolio } from "./BackendCom";
 import { useNavigation } from "../state/NavigationContext";
@@ -349,7 +349,8 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
             );
             setPortfolioNames((prev) => ({
               ...prev,
-              [activePortfolio]: tempPortfolioName || prev[activePortfolio] || "",
+              [activePortfolio]:
+                tempPortfolioName || prev[activePortfolio] || "",
             }));
             setIds((prev) => ({
               ...prev,

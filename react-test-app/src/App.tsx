@@ -14,7 +14,7 @@ import StockToPortfolioCard from "./components/StockToPortfolioCard";
 import { COLORS } from "./constants/Colors";
 import { MetalText } from "./components/MetalText";
 import NewsTicker from "./components/ScrollingNews";
-import { useWSData } from "./components/Contexts/WSContest";
+import { useWSData } from "./components/Contexts/WSContext";
 import { useStockContext } from "./components/Contexts/StockContext";
 import { BacktestSelection } from "./components/BacktestSelection";
 import BacktestGraphComponent from "./components/BacktestGraph";
@@ -150,30 +150,13 @@ const App: React.FC = () => {
           overflow: "hidden" /* Keeps children like HomePage constrained */,
         }}
       >
-        {activeCard === "home" && (
-          <HomePage />
-        )}
-        {activeCard === "options" && (
-          <OptionCard
-          />
-        )}
-        {activeCard === "stock" && (
-          <StockCard />
-        )}
-        {activeCard === "fixedStock" && (
-          <FixedStockCard
-          />
-        )}
-        {activeCard === "fixedOption" && (
-          <FixedOptionCard
-          />
-        )}
-        {activeCard === "financials" && (
-          <FinancialsCard />
-        )}
-        {activeCard === "portfolioList" && (
-          <PortfolioCards />
-        )}
+        {activeCard === "home" && <HomePage />}
+        {activeCard === "options" && <OptionCard />}
+        {activeCard === "stock" && <StockCard />}
+        {activeCard === "fixedStock" && <FixedStockCard />}
+        {activeCard === "fixedOption" && <FixedOptionCard />}
+        {activeCard === "financials" && <FinancialsCard />}
+        {activeCard === "portfolioList" && <PortfolioCards />}
         {activeCard === "newPortfolio" && (
           <NewPortfolioCard
             setNewStocks={setNewStocks}
@@ -183,24 +166,14 @@ const App: React.FC = () => {
           />
         )}
         {activeCard === "stockToPortfolio" && (
-          <StockToPortfolioCard
-            setNewStocks={setNewStocks}
-          />
+          <StockToPortfolioCard setNewStocks={setNewStocks} />
         )}
         {activeCard === "backtestSelection" && (
-          <BacktestSelection
-            weights={weights}
-            setWeights={setWeights}
-          />
+          <BacktestSelection weights={weights} setWeights={setWeights} />
         )}
-        {activeCard === "backtestGraph" && (
-          <BacktestGraphComponent />
-        )}
+        {activeCard === "backtestGraph" && <BacktestGraphComponent />}
         {activeCard === "backtestStock" && (
-          <BacktestStockCard
-            setWeight={setWeights}
-            weight={weights}
-          />
+          <BacktestStockCard setWeight={setWeights} weight={weights} />
         )}
       </div>
     </div>

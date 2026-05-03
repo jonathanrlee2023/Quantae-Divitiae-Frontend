@@ -1,6 +1,6 @@
 import React, { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { useStockContext } from "./Contexts/StockContext";
-import { useWSActions } from "./Contexts/WSContest";
+import { useWSActions } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 import { apiFetch } from "../api/client";
 import { useNavigation } from "../state/NavigationContext";

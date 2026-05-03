@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useWSData } from "./Contexts/WSContest"; // adjust import
+import { useWSData } from "./Contexts/WSContext"; // adjust import
 import "chartjs-adapter-date-fns";
 import { BalancePoint, useBalanceContext } from "./Contexts/BalanceContext";
 import { COLORS } from "../constants/Colors";

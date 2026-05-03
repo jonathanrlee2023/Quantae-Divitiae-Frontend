@@ -7,7 +7,7 @@ import {
   Position,
   useStreamActionsContext,
 } from "./Contexts/StreamActionsContext";
-import { useWS } from "./Contexts/WSContest";
+import { useWS } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 import { ModifyTracker } from "./BackendCom";
 import { useNavigation } from "../state/NavigationContext";

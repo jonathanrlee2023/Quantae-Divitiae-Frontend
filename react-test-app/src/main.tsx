@@ -8,7 +8,7 @@ import { BalanceProvider } from "./components/Contexts/BalanceContext";
 import { OptionProvider } from "./components/Contexts/OptionContext";
 import { CompanyProvider } from "./components/Contexts/CompanyContext";
 import { StreamActionsProvider } from "./components/Contexts/StreamActionsContext";
-import { WSProvider } from "./components/Contexts/WSContest";
+import { WSProvider } from "./components/Contexts/WSContext";
 import Login from "./components/LoginPage";
 import Register from "./components/CreateLoginPage";
 import { MetalFilter } from "./components/MetalFilter";

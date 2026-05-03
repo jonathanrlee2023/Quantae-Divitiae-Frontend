@@ -4,7 +4,7 @@ import { on } from "process";
 import { useButtons } from "./ButtonContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
 import "../../App.css";
-import { useWSActions } from "./Contexts/WSContest";
+import { useWSActions } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 import { get } from "http";
 
@@ -188,7 +188,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
                   }}
                 >
                   <span>{item}</span>
-                  <span style={{ color: COLORS.neutrals.n333, fontSize: "0.7rem" }}>
+                  <span
+                    style={{ color: COLORS.neutrals.n333, fontSize: "0.7rem" }}
+                  >
                     SELECT ↵
                   </span>
                 </div>

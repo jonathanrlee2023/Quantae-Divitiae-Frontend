@@ -9,7 +9,12 @@ import React, {
   useCallback,
 } from "react";
 import { getAccessToken } from "../../auth/token";
-import { BalancePoint, useBalanceContext } from "./BalanceContext";
+import {
+  BalancePoint,
+  ClosePosition,
+  ClosePositionHistory,
+  useBalanceContext,
+} from "./BalanceContext";
 import { CompanyStats, useCompanyContext } from "./CompanyContext";
 import { OptionPoint, useOptionContext } from "./OptionContext";
 import {
@@ -30,6 +35,7 @@ interface WSActionsContextValue {
   setPortfolioNames: React.Dispatch<
     React.SetStateAction<Record<number, string>>
   >;
+  setClosePositions: React.Dispatch<React.SetStateAction<ClosePositionHistory>>;
   clientID: string;
 }
 
@@ -41,6 +47,7 @@ interface WSDataContextValue {
   previousCard: string;
   previousID: string;
   portfolioNames: Record<number, string>;
+  closePositions: ClosePositionHistory;
 }
 
 const WSActionsContext = createContext<WSActionsContextValue | undefined>(
@@ -66,6 +73,9 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
   const [portfolioNames, setPortfolioNames] = useState<Record<number, string>>(
     {},
   );
+  const [closePositions, setClosePositions] = useState<ClosePositionHistory>({
+    ClosePositions: [],
+  });
 
   const { updateBalancePoint, updateNews } = useBalanceContext();
   const { updateCompanyStats } = useCompanyContext();
@@ -102,6 +112,13 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
             updateOptionPoint(opt.Symbol, opt);
           });
         }
+        return;
+      }
+
+      if (parsed.closePositions !== undefined) {
+        setClosePositions({
+          ClosePositions: parsed.closePositions as ClosePosition[],
+        });
         return;
       }
 
@@ -192,6 +209,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
       setPreviousID,
       setPortfolioNames,
       clientID,
+      setClosePositions,
     }),
     [
       sendMessage,
@@ -201,6 +219,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
       setPreviousID,
       setPortfolioNames,
       clientID,
+      setClosePositions,
     ],
   );
 
@@ -213,6 +232,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
       previousCard,
       previousID,
       portfolioNames,
+      closePositions,
     }),
     [
       lastMessage,
@@ -222,12 +242,15 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
       previousCard,
       previousID,
       portfolioNames,
+      closePositions,
     ],
   );
 
   return (
     <WSActionsContext.Provider value={actionsValue}>
-      <WSDataContext.Provider value={dataValue}>{children}</WSDataContext.Provider>
+      <WSDataContext.Provider value={dataValue}>
+        {children}
+      </WSDataContext.Provider>
     </WSActionsContext.Provider>
   );
 };

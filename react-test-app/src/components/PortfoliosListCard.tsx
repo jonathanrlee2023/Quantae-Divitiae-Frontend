@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useBalanceContext } from "./Contexts/BalanceContext";
-import { useWSActions, useWSData } from "./Contexts/WSContest";
+import { useWSActions, useWSData } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 import { apiFetch } from "../api/client";
 import { useNavigation } from "../state/NavigationContext";
@@ -61,7 +61,13 @@ export const PortfolioCards: React.FC = () => {
         clearTimeout(timeoutId);
       }
     },
-    [activePortfolio, setActiveCard, setActivePortfolio, setIds, setPortfolioNames],
+    [
+      activePortfolio,
+      setActiveCard,
+      setActivePortfolio,
+      setIds,
+      setPortfolioNames,
+    ],
   );
 
   const PortfolioCard = ({

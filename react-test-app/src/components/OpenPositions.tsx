@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useWS } from "./Contexts/WSContest";
+import { useWS } from "./Contexts/WSContext";
 import { useStockContext } from "./Contexts/StockContext";
 import { useOptionContext } from "./Contexts/OptionContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
@@ -13,9 +13,7 @@ interface IdCardProps {
   defaultMessage: string;
 }
 
-export const IdCards: React.FC<IdCardProps> = ({
-  defaultMessage,
-}) => {
+export const IdCards: React.FC<IdCardProps> = ({ defaultMessage }) => {
   const { goTo: setActiveCard } = useNavigation();
   const { setFixedID: setActiveID, setActiveStock } = useSelection();
   const { activePortfolio } = usePortfolioUI();

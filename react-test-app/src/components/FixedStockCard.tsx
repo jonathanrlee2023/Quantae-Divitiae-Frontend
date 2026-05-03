@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { TodayStockWSComponent } from "./TodayGraph";
 import { useOptionContext } from "./Contexts/OptionContext";
 import { useStockContext } from "./Contexts/StockContext";
-import { useWS } from "./Contexts/WSContest";
+import { useWS } from "./Contexts/WSContext";
 import { OptionExpirationCards } from "./OptionExpirationCards";
 import { postData, ModifyTracker } from "./BackendCom";
 import { COLORS } from "../constants/Colors";
@@ -164,9 +164,7 @@ export const StockCard: React.FC = () => {
               minHeight: 0,
             }}
           >
-            <TodayStockWSComponent
-              stockSymbol={activeStock}
-            />
+            <TodayStockWSComponent stockSymbol={activeStock} />
           </div>
 
           {/* Trade Execution Bar */}

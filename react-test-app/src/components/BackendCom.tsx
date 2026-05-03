@@ -1,4 +1,5 @@
 import { Position } from "./Contexts/StreamActionsContext";
+import { useWSActions } from "./Contexts/WSContext";
 import { apiFetch } from "../api/client";
 
 interface OptionParts {
@@ -18,6 +19,7 @@ export const postData = async (
   clientID: string,
 ) => {
   const data = { id: ID, price, amount, portfolio_id, client_id: clientID };
+  const { setClosePositions } = useWSActions();
 
   try {
     const response = await apiFetch(`/${openOrClose}`, {
@@ -30,6 +32,23 @@ export const postData = async (
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    if (openOrClose === "closePosition") {
+      setClosePositions((prev) => ({
+        ...prev,
+        ClosePositions: [
+          ...prev.ClosePositions,
+          {
+            id: ID,
+            price,
+            amount,
+            portfolio_id,
+            client_id: clientID,
+            timestamp: Date.now(),
+          },
+        ],
+      }));
     }
 
     const result = await response.text();

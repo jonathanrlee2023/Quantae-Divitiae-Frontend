@@ -7,6 +7,19 @@ export type BalancePoint = {
   PortfolioID: number;
 };
 
+export type ClosePosition = {
+  id: string;
+  price: number;
+  amount: number;
+  portfolio_id: number;
+  client_id: string;
+  timestamp: number;
+};
+
+export type ClosePositionHistory = {
+  ClosePositions: ClosePosition[];
+};
+
 export type PortfolioBalancePoint = Record<number, BalancePoint[]>;
 
 export type GlobalNews = Record<string, string>;

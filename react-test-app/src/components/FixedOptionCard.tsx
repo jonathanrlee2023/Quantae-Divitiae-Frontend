@@ -1,5 +1,5 @@
 import { FixedOptionWSComponent } from "./FixedOptionGraph";
-import { useWSData } from "./Contexts/WSContest";
+import { useWSData } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 import { useNavigation } from "../state/NavigationContext";
 import { useSelection } from "../state/SelectionContext";

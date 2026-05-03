@@ -3,7 +3,7 @@ import SearchBar from "./SearchBar";
 import { TodayStockWSComponent } from "./TodayGraph";
 import { useStockContext } from "./Contexts/StockContext";
 import { useStreamActionsContext } from "./Contexts/StreamActionsContext";
-import { useWS } from "./Contexts/WSContest";
+import { useWS } from "./Contexts/WSContext";
 import { COLORS } from "../constants/Colors";
 import { useNavigation } from "../state/NavigationContext";
 import { useSelection } from "../state/SelectionContext";

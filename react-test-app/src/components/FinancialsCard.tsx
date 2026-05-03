@@ -9,7 +9,7 @@ import {
 } from "./Contexts/CompanyContext";
 import { FinancialGrid } from "./FinancialGrid";
 import { COLORS } from "../constants/Colors";
-import { useWSData } from "./Contexts/WSContest";
+import { useWSData } from "./Contexts/WSContext";
 import { useNavigation } from "../state/NavigationContext";
 
 type Period = "Annual" | "Quarterly";
@@ -142,7 +142,9 @@ export const FinancialsCard: React.FC = () => {
                   fontWeight: "700",
                   letterSpacing: "0.05em",
                   backgroundColor:
-                    period === p ? COLORS.secondaryTextColor : COLORS.transparent,
+                    period === p
+                      ? COLORS.secondaryTextColor
+                      : COLORS.transparent,
                   color:
                     period === p ? COLORS.appBackground : COLORS.infoTextColor,
                 }}

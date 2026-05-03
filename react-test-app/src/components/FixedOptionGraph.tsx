@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useWS } from "./Contexts/WSContest"; // adjust import
+import { useWS } from "./Contexts/WSContext"; // adjust import
 import "chartjs-adapter-date-fns";
 import { OptionPoint, useOptionContext } from "./Contexts/OptionContext";
 import { OptionMetric } from "./OptionGraph";
