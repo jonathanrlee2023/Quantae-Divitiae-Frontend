@@ -1,19 +1,18 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { MetalText } from "./shared/MetalText";
-import { COLORS } from "../constants/Colors";
-import React from "react";
+import { MetalText } from "./MetalText";
+import { COLORS } from "../../constants/Colors";
 
 describe("MetalText", () => {
   it("renders children", () => {
     render(<MetalText>Hello</MetalText>);
-    expect(screen.getByText("Hello")).toBeDefined();
+    expect(screen.getByText("Hello")).toBeInTheDocument();
   });
 
   it("applies default color from COLORS", () => {
     const { container } = render(<MetalText>X</MetalText>);
     const el = container.querySelector("span");
-    expect(el).toHaveAttribute("style", `color: ${COLORS.yellow.button}`);
+    expect(el).toHaveStyle({ color: COLORS.yellow.button });
   });
 
   it("allows overriding color and fontSize", () => {
@@ -23,6 +22,6 @@ describe("MetalText", () => {
       </MetalText>,
     );
     const el = container.querySelector("span");
-    expect(el).toHaveAttribute("style", `color: #ff00ff; font-size: 2rem`);
+    expect(el).toHaveStyle({ color: "#ff00ff", fontSize: "2rem" });
   });
 });

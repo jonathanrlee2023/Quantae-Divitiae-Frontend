@@ -1,0 +1,165 @@
+import { useState } from "react";
+import { COLORS } from "../../constants/Colors";
+import { BalanceWSComponent } from "./Balance";
+import { IdCards } from "../portfolio/OpenPositions";
+import { SectorAllocation } from "./SectorAllocation";
+import { useNavigation } from "../../state/NavigationContext";
+import { useSelection } from "../../state/SelectionContext";
+import { usePortfolioUI } from "../../state/PortfolioUIContext";
+
+export const HomePage: React.FC = () => {
+  const { goTo: setActiveCard } = useNavigation();
+  const { setFixedID, setActiveStock } = useSelection();
+  const { activePortfolio } = usePortfolioUI();
+  const [view, setView] = useState<"balance" | "sector">("balance");
+
+  const toggleView = () => {
+    setView((prev) => (prev === "balance" ? "sector" : "balance"));
+  };
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "94vh",
+        width: "100%",
+        backgroundColor: COLORS.appBackground,
+        padding: "0 20px 15px 20px",
+        marginTop: "10px",
+        marginBottom: "10px",
+        overflow: "hidden",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{ display: "flex", flex: 1, gap: "20px", overflow: "hidden" }}
+      >
+        {/* Left side - Chart Dashboard */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            minWidth: 0,
+          }}
+        >
+          <div
+            className="card"
+            style={{
+              flex: 1,
+              margin: "0",
+              display: "flex",
+              flexDirection: "column",
+              background: COLORS.appBackground,
+              border: "1px solid " + COLORS.cardSoftBorder,
+              borderRadius: "4px",
+              overflow: "hidden",
+              position: "relative", // Added for positioning arrows
+            }}
+          >
+            {/* Navigation Arrows */}
+            <button
+              onClick={toggleView}
+              style={{
+                position: "absolute",
+                right: "15px",
+                top: "15px",
+                zIndex: 10,
+                background: COLORS.overlays.black50,
+                border: `1px solid ${COLORS.cardSoftBorder}`,
+                color: COLORS.white,
+                cursor: "pointer",
+                padding: "5px 10px",
+                fontSize: "0.8rem",
+                fontFamily: "monospace",
+                borderRadius: "3px",
+              }}
+            >
+              {view === "balance" ? "SECTOR →" : "← BALANCE"}
+            </button>
+
+            <div style={{ flex: 1, height: "100%", width: "100%" }}>
+              {view === "balance" ? (
+                <BalanceWSComponent activePortfolio={activePortfolio} />
+              ) : (
+                <SectorAllocation activePortfolio={activePortfolio} />
+              )}
+            </div>
+
+            {/* Optional: Pagination Dots */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "8px",
+                paddingBottom: "10px",
+              }}
+            >
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background:
+                    view === "balance"
+                      ? COLORS.secondaryTextColor
+                      : COLORS.borderColor,
+                }}
+              />
+              <div
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background:
+                    view === "sector"
+                      ? COLORS.secondaryTextColor
+                      : COLORS.borderColor,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Right side - Sidebar */}
+        <div
+          style={{
+            width: "280px",
+            display: "flex",
+            flexDirection: "column",
+            flexShrink: 0,
+          }}
+        >
+          <div
+            className="card-title"
+            style={{
+              fontSize: "0.65rem",
+              color: COLORS.secondaryTextColor,
+              letterSpacing: "0.15em",
+              marginBottom: "10px",
+              paddingLeft: "5px",
+            }}
+          >
+            MARKET POSITIONS
+          </div>
+
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              background: COLORS.cardBackground,
+              border: "1px solid " + COLORS.cardSoftBorder,
+              borderRadius: "4px",
+            }}
+          >
+            <IdCards
+              defaultMessage="NO OPEN POSITIONS"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;
