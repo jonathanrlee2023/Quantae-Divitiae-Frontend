@@ -11,13 +11,14 @@ export type ClosePosition = {
   id: string;
   price: number;
   amount: number;
+  pl: number;
   portfolio_id: number;
   client_id: string;
   timestamp: number;
 };
 
 export type ClosePositionHistory = {
-  ClosePositions: ClosePosition[];
+  ClosePositions: Record<number, ClosePosition[]>;
 };
 
 export type PortfolioBalancePoint = Record<number, BalancePoint[]>;

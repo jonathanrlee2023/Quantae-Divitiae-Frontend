@@ -1,5 +1,4 @@
 import { Position } from "../contexts/StreamActionsContext";
-import { useWSActions } from "../contexts/WSContext";
 import { apiFetch } from "../../api/client";
 
 interface OptionParts {
@@ -19,7 +18,6 @@ export const postData = async (
   clientID: string,
 ) => {
   const data = { id: ID, price, amount, portfolio_id, client_id: clientID };
-  const { setClosePositions } = useWSActions();
 
   try {
     const response = await apiFetch(`/${openOrClose}`, {
@@ -32,23 +30,6 @@ export const postData = async (
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    if (openOrClose === "closePosition") {
-      setClosePositions((prev) => ({
-        ...prev,
-        ClosePositions: [
-          ...prev.ClosePositions,
-          {
-            id: ID,
-            price,
-            amount,
-            portfolio_id,
-            client_id: clientID,
-            timestamp: Date.now(),
-          },
-        ],
-      }));
     }
 
     const result = await response.text();
@@ -113,8 +94,10 @@ export function formatOptionSymbol(
   return `${ticker}${yy}${month.padStart(2, "0")}${day.padStart(2, "0")}${typeLetter}${strikeStr}`;
 }
 
-export const ParseOptionId = (optionId: string): OptionParts | null => {
+export const ParseOptionId = (optionId: unknown): OptionParts | null => {
+  if (typeof optionId !== "string") return null;
   const cleanId = optionId.trim();
+  if (!cleanId) return null;
   const regex = /^([A-Z]+)\s*(\d{2})(\d{2})(\d{2})([CP])(\d+)$/;
   const match = cleanId.match(regex);
 

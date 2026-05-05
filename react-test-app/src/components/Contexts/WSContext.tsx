@@ -74,7 +74,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
     {},
   );
   const [closePositions, setClosePositions] = useState<ClosePositionHistory>({
-    ClosePositions: [],
+    ClosePositions: {},
   });
 
   const { updateBalancePoint, updateNews } = useBalanceContext();
@@ -115,13 +115,35 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
         return;
       }
 
-      if (parsed.closePositions !== undefined) {
+      if (parsed.ClosePositions !== undefined) {
+        console.log("parsed.ClosePositions", parsed.ClosePositions);
         setClosePositions({
-          ClosePositions: parsed.closePositions as ClosePosition[],
-        });
+          ClosePositions: parsed.ClosePositions,
+        } as ClosePositionHistory);
         return;
       }
 
+      if (parsed.pl !== undefined) {
+        if (parsed.portfolio_id === undefined) return;
+        setClosePositions((prev) => ({
+          ClosePositions: {
+            ...prev.ClosePositions,
+            [parsed.portfolio_id]: [
+              ...(prev.ClosePositions[parsed.portfolio_id] ?? []),
+              {
+                id: parsed.id,
+                price: parsed.price,
+                amount: parsed.amount,
+                pl: parsed.pl,
+                portfolio_id: parsed.portfolio_id,
+                client_id: String(parsed.client_id ?? clientID ?? ""),
+                timestamp: parsed.timestamp,
+              },
+            ],
+          },
+        }));
+        return;
+      }
       if (parsed.GlobalNews !== undefined) {
         updateNews(parsed);
         return;

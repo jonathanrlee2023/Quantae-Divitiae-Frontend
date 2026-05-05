@@ -21,13 +21,12 @@ import BacktestGraphComponent from "./components/backtest/BacktestGraph";
 import BacktestStockCard from "./components/backtest/BacktestStockCard";
 import { useNavigation } from "./state/NavigationContext";
 import { useSelection } from "./state/SelectionContext";
-import { usePortfolioUI } from "./state/PortfolioUIContext";
+import { ClosedPositionCard } from "./components/portfolio/ClosedPositionCard";
 const App: React.FC = () => {
   const { previousID } = useWSData();
   const { backtestPayload } = useStockContext();
   const { activeCard, goTo: setActiveCard } = useNavigation();
-  const { activeStock, fixedID, setActiveStock, setFixedID } = useSelection();
-  const { activePortfolio, setActivePortfolio } = usePortfolioUI();
+  const { activeStock, setActiveStock } = useSelection();
   const [newStocks, setNewStocks] = useState<Record<string, Position>>({});
   const [weights, setWeights] = useState<Record<string, number>>({ Cash: 1.0 });
   const [tempPortfolioName, setTempPortfolioName] = useState<string>("");
@@ -93,6 +92,7 @@ const App: React.FC = () => {
             { id: "options", label: "OPTIONS" },
             { id: "portfolioList", label: "PORTFOLIOS" },
             { id: "backtestSelection", label: "BACKTEST" },
+            { id: "closedPosition", label: "HISTORY" },
           ].map((item) => (
             <div
               key={item.id}
@@ -174,6 +174,9 @@ const App: React.FC = () => {
         {activeCard === "backtestGraph" && <BacktestGraphComponent />}
         {activeCard === "backtestStock" && (
           <BacktestStockCard setWeight={setWeights} weight={weights} />
+        )}
+        {activeCard === "closedPosition" && (
+          <ClosedPositionCard defaultMessage="No closed positions" />
         )}
       </div>
     </div>
