@@ -11,30 +11,49 @@ import { StreamActionsProvider } from "./components/contexts/StreamActionsContex
 import { WSProvider } from "./components/contexts/WSContext";
 import Login from "./pages/LoginPage";
 import Register from "./pages/CreateLoginPage";
+import LandingPage from "./pages/LandingPage";
 import { MetalFilter } from "./components/shared/MetalFilter";
 import { NavigationProvider } from "./state/NavigationContext";
 import { SelectionProvider } from "./state/SelectionContext";
 import { PortfolioUIProvider } from "./state/PortfolioUIContext";
+import { clearAccessToken } from "./auth/token";
 
 const Main = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
+  const handleLogout = () => {
+    clearAccessToken();
+    setUserId(null);
+    setIsRegistering(false);
+    setShowLanding(false);
+  };
 
   if (!userId) {
     return (
       <>
         {/* Render the filter here so Login/Register can see it */}
         <MetalFilter />
-        {isRegistering ? (
-          <Register
-            onBackToLogin={() => setIsRegistering(false)}
-            onLogin={(id) => setUserId(id)}
-          />
+        {showLanding ? (
+          <LandingPage onLoginClick={() => setShowLanding(false)} />
         ) : (
-          <Login
-            onLogin={(id) => setUserId(id)}
-            onGoToRegister={() => setIsRegistering(true)}
-          />
+          <>
+            {isRegistering ? (
+              <Register
+                onBackToLogin={() => setIsRegistering(false)}
+                onLogin={(id) => setUserId(id)}
+              />
+            ) : (
+              <Login
+                onLogin={(id) => setUserId(id)}
+                onGoToRegister={() => setIsRegistering(true)}
+                onBackToLanding={() => {
+                  setIsRegistering(false);
+                  setShowLanding(true);
+                }}
+              />
+            )}
+          </>
         )}
       </>
     );
@@ -53,7 +72,7 @@ const Main = () => {
                   <NavigationProvider>
                     <SelectionProvider>
                       <PortfolioUIProvider>
-                        <App />
+                        <App onLogout={handleLogout} />
                       </PortfolioUIProvider>
                     </SelectionProvider>
                   </NavigationProvider>

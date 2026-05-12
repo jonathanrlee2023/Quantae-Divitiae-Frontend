@@ -22,7 +22,13 @@ import BacktestStockCard from "./components/backtest/BacktestStockCard";
 import { useNavigation } from "./state/NavigationContext";
 import { useSelection } from "./state/SelectionContext";
 import { ClosedPositionCard } from "./components/portfolio/ClosedPositionCard";
-const App: React.FC = () => {
+import SettingsCard from "./components/settings/SettingsCard";
+
+interface AppProps {
+  onLogout: () => void;
+}
+
+const App: React.FC<AppProps> = ({ onLogout }) => {
   const { previousID } = useWSData();
   const { backtestPayload } = useStockContext();
   const { activeCard, goTo: setActiveCard } = useNavigation();
@@ -30,10 +36,27 @@ const App: React.FC = () => {
   const [newStocks, setNewStocks] = useState<Record<string, Position>>({});
   const [weights, setWeights] = useState<Record<string, number>>({ Cash: 1.0 });
   const [tempPortfolioName, setTempPortfolioName] = useState<string>("");
+  const [displayedCard, setDisplayedCard] = useState<string>("home");
+  const [isCardTransitioning, setIsCardTransitioning] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (previousID && !activeStock) setActiveStock(previousID);
   }, [previousID, activeStock, setActiveStock]);
+
+  useEffect(() => {
+    if (activeCard === displayedCard) return;
+
+    setIsCardTransitioning(true);
+    const swapTimer = window.setTimeout(() => {
+      setDisplayedCard(activeCard);
+      setIsCardTransitioning(false);
+    }, 120);
+
+    return () => {
+      window.clearTimeout(swapTimer);
+    };
+  }, [activeCard, displayedCard]);
 
   return (
     <div
@@ -93,6 +116,7 @@ const App: React.FC = () => {
             { id: "portfolioList", label: "PORTFOLIOS" },
             { id: "backtestSelection", label: "BACKTEST" },
             { id: "closedPosition", label: "HISTORY" },
+            { id: "settings", label: "SETTINGS" },
           ].map((item) => (
             <div
               key={item.id}
@@ -148,16 +172,19 @@ const App: React.FC = () => {
           height: "100%",
           width: "100%",
           overflow: "hidden" /* Keeps children like HomePage constrained */,
+          opacity: isCardTransitioning ? 0 : 1,
+          transform: isCardTransitioning ? "translateY(8px)" : "translateY(0)",
+          transition: "opacity 250ms ease, transform 300ms ease",
         }}
       >
-        {activeCard === "home" && <HomePage />}
-        {activeCard === "options" && <OptionCard />}
-        {activeCard === "stock" && <StockCard />}
-        {activeCard === "fixedStock" && <FixedStockCard />}
-        {activeCard === "fixedOption" && <FixedOptionCard />}
-        {activeCard === "financials" && <FinancialsCard />}
-        {activeCard === "portfolioList" && <PortfolioCards />}
-        {activeCard === "newPortfolio" && (
+        {displayedCard === "home" && <HomePage />}
+        {displayedCard === "options" && <OptionCard />}
+        {displayedCard === "stock" && <StockCard />}
+        {displayedCard === "fixedStock" && <FixedStockCard />}
+        {displayedCard === "fixedOption" && <FixedOptionCard />}
+        {displayedCard === "financials" && <FinancialsCard />}
+        {displayedCard === "portfolioList" && <PortfolioCards />}
+        {displayedCard === "newPortfolio" && (
           <NewPortfolioCard
             setNewStocks={setNewStocks}
             setTempPortfolioName={setTempPortfolioName}
@@ -165,19 +192,20 @@ const App: React.FC = () => {
             tempPortfolioName={tempPortfolioName}
           />
         )}
-        {activeCard === "stockToPortfolio" && (
+        {displayedCard === "stockToPortfolio" && (
           <StockToPortfolioCard setNewStocks={setNewStocks} />
         )}
-        {activeCard === "backtestSelection" && (
+        {displayedCard === "backtestSelection" && (
           <BacktestSelection weights={weights} setWeights={setWeights} />
         )}
-        {activeCard === "backtestGraph" && <BacktestGraphComponent />}
-        {activeCard === "backtestStock" && (
+        {displayedCard === "backtestGraph" && <BacktestGraphComponent />}
+        {displayedCard === "backtestStock" && (
           <BacktestStockCard setWeight={setWeights} weight={weights} />
         )}
-        {activeCard === "closedPosition" && (
+        {displayedCard === "closedPosition" && (
           <ClosedPositionCard defaultMessage="No closed positions" />
         )}
+        {displayedCard === "settings" && <SettingsCard onLogout={onLogout} />}
       </div>
     </div>
   );

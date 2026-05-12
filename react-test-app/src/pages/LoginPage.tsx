@@ -7,9 +7,14 @@ import { apiFetch } from "../api/client";
 interface LoginProps {
   onLogin: (userId: number) => void;
   onGoToRegister: () => void;
+  onBackToLanding: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin, onGoToRegister }) => {
+const Login: React.FC<LoginProps> = ({
+  onLogin,
+  onGoToRegister,
+  onBackToLanding,
+}) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -96,17 +101,21 @@ const Login: React.FC<LoginProps> = ({ onLogin, onGoToRegister }) => {
               required
             />
           </div>
-
-          {/* High-Contrast Primary Action */}
-          <button type="submit" className="btn-sleek w-100 mb-3">
-            SIGN IN
-          </button>
-
-          {/* Low-Contrast Secondary Action */}
           <div className="text-center">
             <button
+              type="submit"
+              className="btn-sleek btn-sleek-green w-100 mb-3"
+              style={{
+                fontSize: "11px",
+                height: "35px",
+                letterSpacing: "0.05em",
+              }}
+            >
+              SIGN IN
+            </button>
+            <button
               type="button"
-              className="btn-sleek btn-sleek-dark w-100"
+              className="btn-sleek btn-sleek-dark w-100 mb-3"
               style={{
                 fontSize: "11px",
                 height: "35px",
@@ -115,6 +124,18 @@ const Login: React.FC<LoginProps> = ({ onLogin, onGoToRegister }) => {
               onClick={onGoToRegister}
             >
               CREATE ACCOUNT
+            </button>
+            <button
+              type="button"
+              className="btn-sleek btn-sleek-dark w-100 mt-2"
+              style={{
+                fontSize: "11px",
+                height: "35px",
+                letterSpacing: "0.05em",
+              }}
+              onClick={onBackToLanding}
+            >
+              BACK TO HOMEPAGE
             </button>
           </div>
         </form>
