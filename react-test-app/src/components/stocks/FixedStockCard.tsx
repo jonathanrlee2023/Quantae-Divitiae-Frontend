@@ -47,12 +47,13 @@ export const StockCard: React.FC = () => {
     totalAccountValue > 0
       ? ((currentShares * latestMark) / totalAccountValue) * 100
       : 0;
+  const roundedTotalPositionValue =
+    Math.round(currentShares * latestMark * 100) / 100;
+  const roundedOpenPositions = Math.round(currentShares * 100) / 100;
 
-  // The CHANGE in percentage based on the current input values
   const orderImpactPct =
     totalAccountValue > 0 ? (dollarValue / totalAccountValue) * 100 : 0;
 
-  // Helper for the UI to show the "Target" state
   const targetPortfolioPct = currentPortfolioPct + orderImpactPct;
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -298,7 +299,7 @@ export const StockCard: React.FC = () => {
                   }}
                 >
                   {currentShares > 0
-                    ? `$${(currentShares * latestMark).toFixed(2)}`
+                    ? `$${roundedTotalPositionValue.toFixed(2)}`
                     : "$0.00"}
                 </span>
               </div>
@@ -319,7 +320,7 @@ export const StockCard: React.FC = () => {
                     color: COLORS.mainFontColor,
                   }}
                 >
-                  {currentShares ?? 0}
+                  {roundedOpenPositions.toFixed(2)}
                 </span>
               </div>
 

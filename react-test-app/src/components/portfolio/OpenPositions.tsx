@@ -102,26 +102,58 @@ export const IdCards: React.FC<IdCardProps> = ({ defaultMessage }) => {
         padding: "0",
         maxHeight: "100%",
         overflowY: "auto",
+        overflowX: "hidden",
         backgroundColor: COLORS.appBackground,
       }}
     >
-      {Object.keys(ids).length === 0 ? (
+      {Object.keys(portfolioIds).length === 0 ? (
         <div
           style={{
             color: COLORS.neutrals.n444,
             padding: "24px",
-            fontSize: "0.75rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
+            fontSize: "0.8rem",
             textAlign: "center",
           }}
         >
-          {defaultMessage}
+          <div
+            style={{
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              marginBottom: "12px",
+            }}
+          >
+            {defaultMessage}
+          </div>
+          <div className="d-flex justify-content-center gap-2">
+            <button
+              type="button"
+              className="btn-sleek btn-sleek-dark"
+              style={{ fontSize: "0.65rem", height: "30px", padding: "0 10px" }}
+              onClick={() => setActiveCard("stock")}
+            >
+              BROWSE STOCKS
+            </button>
+            <button
+              type="button"
+              className="btn-sleek"
+              style={{
+                fontSize: "0.65rem",
+                height: "30px",
+                padding: "0 10px",
+                backgroundColor: COLORS.secondaryTextColor,
+                color: COLORS.appBackground,
+              }}
+              onClick={() => setActiveCard("portfolioList")}
+            >
+              OPEN PORTFOLIOS
+            </button>
+          </div>
         </div>
       ) : (
         Object.entries(portfolioIds).map(([id, amount]) => (
           <div
             key={id}
+            className="position-row"
             onClick={() => handleCardClick(id)}
             style={{
               padding: "12px 16px",
@@ -145,6 +177,7 @@ export const IdCards: React.FC<IdCardProps> = ({ defaultMessage }) => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: "2px",
+                gap: "10px",
               }}
             >
               <span
@@ -153,6 +186,11 @@ export const IdCards: React.FC<IdCardProps> = ({ defaultMessage }) => {
                   fontWeight: "800",
                   color: COLORS.mainFontColor /* Brighter for readability */,
                   fontFamily: "monospace",
+                  flex: 1,
+                  minWidth: 0,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {formatDisplayId(id)}
@@ -163,6 +201,7 @@ export const IdCards: React.FC<IdCardProps> = ({ defaultMessage }) => {
                   fontWeight: "700",
                   color: priceColor(id) /* Accent color for price */,
                   fontFamily: "monospace",
+                  flexShrink: 0,
                 }}
               >
                 {getLatestPrice(id)}
@@ -178,7 +217,7 @@ export const IdCards: React.FC<IdCardProps> = ({ defaultMessage }) => {
                 letterSpacing: "0.05em",
               }}
             >
-              {isOption(id) ? "CONTRACTS" : "SHARES"}: {amount}
+              {isOption(id) ? "CONTRACTS" : "SHARES"}: {amount.toFixed(2)}
             </div>
           </div>
         ))

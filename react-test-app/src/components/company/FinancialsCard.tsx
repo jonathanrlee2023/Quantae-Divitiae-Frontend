@@ -52,10 +52,13 @@ export const FinancialsCard: React.FC = () => {
   const { previousID, previousCard } = useWSData();
 
   const stats = companyStats[previousID];
-  const activeData = getActiveReport(stats, period, reportType);
+  const hasStats = Boolean(stats);
+  const isFinancialsLoading = previousID !== "" && !hasStats;
+  const activeData = hasStats ? getActiveReport(stats, period, reportType) : [];
 
   return (
     <div
+      className="main-view-shell"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -67,7 +70,7 @@ export const FinancialsCard: React.FC = () => {
     >
       {/* Integrated Header Section */}
       <div
-        className="d-flex justify-content-between align-items-center"
+        className="d-flex justify-content-between align-items-center main-control-panel"
         style={{
           background: COLORS.cardBackground,
           padding: "12px 20px",
@@ -95,25 +98,34 @@ export const FinancialsCard: React.FC = () => {
             className="mb-0 d-flex align-items-baseline gap-2"
             style={{ fontSize: "1.4rem" }}
           >
-            <span
-              style={{
-                fontWeight: "800",
-                letterSpacing: "-0.02em",
-                color: COLORS.mainFontColor,
-              }}
-            >
-              {stats.Symbol}
-            </span>
-            <span
-              style={{
-                fontSize: "0.6rem",
-                color: COLORS.infoTextColor,
-                fontFamily: "monospace",
-                textTransform: "uppercase",
-              }}
-            >
-              {stats.Sector} // {stats.Industry}
-            </span>
+            {hasStats ? (
+              <>
+                <span
+                  style={{
+                    fontWeight: "800",
+                    letterSpacing: "-0.02em",
+                    color: COLORS.mainFontColor,
+                  }}
+                >
+                  {stats.Symbol}
+                </span>
+                <span
+                  style={{
+                    fontSize: "0.6rem",
+                    color: COLORS.infoTextColor,
+                    fontFamily: "monospace",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {stats.Sector} // {stats.Industry}
+                </span>
+              </>
+            ) : (
+              <span
+                className="skeleton skeleton-line"
+                style={{ width: "220px", height: "16px" }}
+              />
+            )}
           </h2>
         </div>
 
@@ -163,9 +175,10 @@ export const FinancialsCard: React.FC = () => {
           />
 
           {/* Report Type Selector */}
-          <div className="d-flex gap-4">
+          <div className="d-flex gap-4 financial-tabs">
             {["Income", "Balance", "Cash", "Earnings"].map((r) => (
               <span
+                className="financial-tab"
                 key={r}
                 onClick={() => setReportType(r as ReportType)}
                 style={{
@@ -183,15 +196,6 @@ export const FinancialsCard: React.FC = () => {
                       ? "2px solid" + COLORS.secondaryTextColor
                       : `2px solid ${COLORS.transparent}`,
                   paddingBottom: "4px",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = COLORS.mainFontColor;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color =
-                    reportType === r
-                      ? COLORS.mainFontColor
-                      : COLORS.infoTextColor;
                 }}
               >
                 {r.toUpperCase()}
@@ -212,11 +216,19 @@ export const FinancialsCard: React.FC = () => {
         }}
       >
         <div className="flex-grow-1 overflow-auto custom-scrollbar">
-          {activeData && activeData.length > 0 ? (
+          {isFinancialsLoading ? (
+            <div className="h-100 p-4 d-flex flex-column gap-3">
+              <div className="skeleton skeleton-line" style={{ width: "180px" }} />
+              <div className="skeleton skeleton-line" />
+              <div className="skeleton skeleton-line" />
+              <div className="skeleton skeleton-line" style={{ width: "86%" }} />
+              <div className="skeleton skeleton-box" />
+            </div>
+          ) : activeData && activeData.length > 0 ? (
             <FinancialGrid data={activeData} type={reportType} />
           ) : (
             <div
-              className="h-100 d-flex flex-column align-items-center justify-content-center text-muted"
+              className="h-100 d-flex flex-column align-items-center justify-content-center text-muted financial-empty-state"
               style={{
                 fontSize: "0.8rem",
                 letterSpacing: "0.1em",
@@ -228,7 +240,7 @@ export const FinancialsCard: React.FC = () => {
               </span>
               <span style={{ fontSize: "0.6rem", fontFamily: "monospace" }}>
                 UNABLE TO RETRIEVE {period.toUpperCase()}{" "}
-                {reportType.toUpperCase()} FOR {stats.Symbol}
+                {reportType.toUpperCase()} FOR {hasStats ? stats.Symbol : "SYMBOL"}
               </span>
             </div>
           )}

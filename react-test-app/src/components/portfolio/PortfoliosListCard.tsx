@@ -212,6 +212,7 @@ export const PortfolioCards: React.FC = () => {
     >
       {/* --- Header Section --- */}
       <div
+        className="main-control-panel"
         style={{
           padding: "16px",
           borderBottom: `1px solid ${COLORS.neutrals.n222}`,
@@ -237,7 +238,7 @@ export const PortfolioCards: React.FC = () => {
 
       {/* --- Scrollable List Section --- */}
       <div
-        className="custom-scrollbar"
+        className="custom-scrollbar portfolio-list-scroll"
         style={{
           padding: "12px",
           overflowY: "auto",
@@ -254,7 +255,34 @@ export const PortfolioCards: React.FC = () => {
               marginTop: "40px",
             }}
           >
-            NO PORTFOLIOS INITIALIZED
+            <div
+              style={{
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                marginBottom: "12px",
+              }}
+            >
+              NO PORTFOLIOS INITIALIZED
+            </div>
+            <button
+              type="button"
+              className="btn-sleek"
+              style={{
+                fontSize: "0.65rem",
+                height: "30px",
+                padding: "0 12px",
+                backgroundColor: COLORS.secondaryTextColor,
+                color: COLORS.appBackground,
+              }}
+              onClick={() => {
+                const nextId = (lastPortfolioId || 0) + 1;
+                setActiveCard("newPortfolio");
+                setActivePortfolio(nextId);
+                setIds((prevIds) => ({ ...prevIds, [nextId]: {} }));
+              }}
+            >
+              CREATE FIRST PORTFOLIO
+            </button>
           </div>
         ) : (
           portfolioIds.map((id) => {

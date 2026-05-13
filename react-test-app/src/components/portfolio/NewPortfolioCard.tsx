@@ -40,8 +40,9 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
     isStaged: boolean;
     onClick: (id: string) => void;
   }) => {
-    const latestPrice = stockPoints[id][stockPoints[id].length - 1]?.Mark || 0;
+    const latestPrice = stockPoints[id]?.[stockPoints[id].length - 1]?.Mark || 0;
     const shares = portfolioIds[id] || 0;
+    const displayedShares = isStaged ? (newStocks[id]?.amount ?? 0) : shares;
     return (
       <div
         onClick={() => onClick(id)}
@@ -142,7 +143,7 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
                 color: COLORS.infoTextColor,
               }}
             >
-              {newStocks[id].amount}
+              {displayedShares}
             </span>
           </div>
         </div>
@@ -161,6 +162,7 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
     >
       {/* --- Header: Dynamic Title --- */}
       <div
+        className="new-portfolio-header"
         style={{
           padding: "20px",
           borderBottom: "1px solid " + COLORS.borderColor,
@@ -192,6 +194,7 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
       </div>
 
       <div
+        className="new-portfolio-name-panel"
         style={{
           padding: "20px",
           backgroundColor: COLORS.cardBackground,
@@ -234,12 +237,12 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
       </div>
 
       <div
-        className="custom-scrollbar"
+        className="custom-scrollbar new-portfolio-scroll"
         style={{ padding: "20px", overflowY: "auto", flex: 1 }}
       >
         {/* Existing Assets Section */}
         {tickerSymbols.length > 0 && (
-          <section className="mb-4">
+          <section className="mb-4 new-portfolio-section">
             <h4
               style={{
                 fontSize: "11px",
@@ -265,7 +268,7 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
         )}
 
         {/* New Assets (Staged) Section */}
-        <section>
+        <section className="new-portfolio-section">
           <h4
             style={{
               fontSize: "11px",
@@ -306,7 +309,7 @@ export const NewPortfolioCard: React.FC<NewPortfolioCardProps> = ({
 
       {/* --- Footer Controls --- */}
       <footer
-        className="d-flex gap-2 p-3"
+        className="d-flex gap-2 p-3 new-portfolio-footer"
         style={{
           backgroundColor: COLORS.cardBackground,
           borderTop: "1px solid " + COLORS.borderColor,

@@ -40,6 +40,35 @@ interface TodayStockWSProps {
 
 type Timeframe = "Live" | "1W" | "1M" | "3M" | "1Y" | "3Y" | "All";
 
+const METRIC_EXPLANATIONS: Record<string, string> = {
+  OVERALL_HEALTH:
+    "Composite quality score (0-100) based on valuation, growth, profitability, and balance sheet signals.",
+  "Market Cap":
+    "Total equity value of the company: current share price multiplied by shares outstanding.",
+  Sector:
+    "High-level industry classification used to compare companies with similar business models.",
+  "Intrinsic Price":
+    "Estimated fair value per share based on discounted future cash flows and assumptions.",
+  "Dividend Price":
+    "Estimated value per share based on projected dividend payouts and required return.",
+  "Price at Report":
+    "Stock price at the time this fundamental model/report snapshot was generated.",
+  "Return on Invested Capital":
+    "Profitability on invested capital (after-tax operating income divided by invested capital).",
+  "Historical Growth Rate":
+    "Annualized growth derived from historical company performance over prior periods.",
+  "Forecasted Growth Rate":
+    "Projected growth assumption used for forward-looking valuation calculations.",
+  "PEG Ratio":
+    "Price/Earnings divided by growth rate; lower values can indicate better value relative to growth.",
+  "Sloan Ratio":
+    "Earnings quality measure comparing accrual-based earnings to cash-based earnings.",
+  WACC:
+    "Weighted Average Cost of Capital; blended required return from debt and equity financing.",
+  ROIC:
+    "Return on Invested Capital; efficiency of turning invested capital into operating returns.",
+};
+
 export const verticalLinePlugin = {
   id: "verticalLine",
   afterDraw: (chart: any) => {
@@ -175,7 +204,16 @@ export const TodayStockWSComponent: React.FC<TodayStockWSProps> = ({
         fontSize: "0.9rem",
       }}
     >
-      <span style={{ color: COLORS.infoTextColor }}>{label}</span>
+      <span
+        title={METRIC_EXPLANATIONS[label] ?? undefined}
+        style={{
+          color: COLORS.infoTextColor,
+          cursor: "default",
+          textDecoration: "none",
+        }}
+      >
+        {label}
+      </span>
       <span
         style={{
           color: COLORS.mainFontColor,

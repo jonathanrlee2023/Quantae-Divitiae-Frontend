@@ -17,9 +17,14 @@ const Login: React.FC<LoginProps> = ({
 }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
+    setIsSubmitting(true);
 
     try {
       const response = await apiFetch("/login", {
@@ -36,11 +41,13 @@ const Login: React.FC<LoginProps> = ({
         onLogin(data.user_id);
       } else {
         const errorText = await response.text();
-        alert(`Login failed: ${errorText}`);
+        setErrorMessage(errorText || "Login failed. Please try again.");
       }
     } catch (err) {
       console.error("Login error:", err);
-      alert("Could not connect to the backend.");
+      setErrorMessage("Could not connect to the backend.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -56,9 +63,17 @@ const Login: React.FC<LoginProps> = ({
       >
         <MetalText
           children="QUANTAE DIVITIAE"
-          className="card-title text-center mb-4"
+          className="card-title text-center mb-3"
           fontSize="2rem"
         />
+        <p className="text-center mb-2 login-subtext">
+          Sign in to continue to your dashboard.
+        </p>
+        {errorMessage && (
+          <div className="mb-3 login-error-banner" aria-live="polite">
+            {errorMessage}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           {/* Username Field */}
           <div className="mb-4">
@@ -73,6 +88,7 @@ const Login: React.FC<LoginProps> = ({
               className="search-bar"
               placeholder="ENTER USERNAME"
               value={username}
+              autoComplete="username"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setUsername(e.target.value)
               }
@@ -89,29 +105,40 @@ const Login: React.FC<LoginProps> = ({
             >
               Password
             </label>
-            <input
-              type="password"
-              className="search-bar"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
-              style={{ borderRadius: "4px" }}
-              required
-            />
+            <div className="login-password-wrap">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="search-bar"
+                placeholder="••••••••"
+                value={password}
+                autoComplete="current-password"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
+                style={{ borderRadius: "4px", paddingRight: "66px" }}
+                required
+              />
+              <button
+                type="button"
+                className="login-toggle-password"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? "HIDE" : "SHOW"}
+              </button>
+            </div>
           </div>
-          <div className="text-center">
+          <div className="text-center login-actions">
             <button
               type="submit"
               className="btn-sleek btn-sleek-green w-100 mb-3"
+              disabled={isSubmitting}
               style={{
                 fontSize: "11px",
                 height: "35px",
                 letterSpacing: "0.05em",
               }}
             >
-              SIGN IN
+              {isSubmitting ? "SIGNING IN..." : "SIGN IN"}
             </button>
             <button
               type="button"

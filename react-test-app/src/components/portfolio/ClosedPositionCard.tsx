@@ -17,6 +17,7 @@ interface ClosedPositionCardProps {
 export const ClosedPositionCard: React.FC<ClosedPositionCardProps> = ({
   defaultMessage,
 }) => {
+  const { goTo: setActiveCard } = useNavigation();
   const { activePortfolio } = usePortfolioUI();
   console.log("activePortfolio", activePortfolio);
   const { closePositions } = useWS();
@@ -68,6 +69,7 @@ export const ClosedPositionCard: React.FC<ClosedPositionCardProps> = ({
         padding: "0",
         maxHeight: "100%",
         overflowY: "auto",
+        overflowX: "hidden",
         backgroundColor: COLORS.appBackground,
       }}
     >
@@ -76,13 +78,27 @@ export const ClosedPositionCard: React.FC<ClosedPositionCardProps> = ({
           style={{
             color: COLORS.neutrals.n444,
             padding: "24px",
-            fontSize: "0.75rem",
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
+            fontSize: "0.8rem",
             textAlign: "center",
           }}
         >
-          {defaultMessage}
+          <div
+            style={{
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              marginBottom: "12px",
+            }}
+          >
+            {defaultMessage}
+          </div>
+          <button
+            type="button"
+            className="btn-sleek btn-sleek-dark"
+            style={{ fontSize: "0.65rem", height: "30px", padding: "0 12px" }}
+            onClick={() => setActiveCard("stock")}
+          >
+            GO TO STOCKS
+          </button>
         </div>
       ) : (
         <>
@@ -114,6 +130,7 @@ export const ClosedPositionCard: React.FC<ClosedPositionCardProps> = ({
 
           {closePositionsForPortfolio.map((closePosition) => (
             <div
+              className="position-row"
               key={closePosition.id}
               style={{
                 padding: "12px 16px",
@@ -134,7 +151,7 @@ export const ClosedPositionCard: React.FC<ClosedPositionCardProps> = ({
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                  gridTemplateColumns: "minmax(0, 1.4fr) repeat(3, minmax(0, 1fr))",
                   gap: "12px",
                   alignItems: "center",
                   marginBottom: "2px",

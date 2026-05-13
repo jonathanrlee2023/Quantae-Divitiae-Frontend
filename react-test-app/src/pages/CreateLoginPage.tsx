@@ -10,14 +10,24 @@ const Register: React.FC<LoginProps> = ({ onLogin, onBackToLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
+  const [isErrorStatus, setIsErrorStatus] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatusMessage("");
+    setIsErrorStatus(false);
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setIsErrorStatus(true);
+      setStatusMessage("Passwords do not match.");
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const response = await apiFetch("/register", {
         method: "POST",
@@ -26,14 +36,19 @@ const Register: React.FC<LoginProps> = ({ onLogin, onBackToLogin }) => {
       });
 
       if (response.ok) {
-        alert("Registration successful! Please log in.");
-        onBackToLogin();
+        setIsErrorStatus(false);
+        setStatusMessage("Registration successful. Redirecting to login...");
+        setTimeout(() => onBackToLogin(), 700);
       } else {
         const error = await response.text();
-        alert(`Registration failed: ${error}`);
+        setIsErrorStatus(true);
+        setStatusMessage(error || "Registration failed.");
       }
     } catch (err) {
-      alert("Error connecting to server.");
+      setIsErrorStatus(true);
+      setStatusMessage("Error connecting to server.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -48,11 +63,25 @@ const Register: React.FC<LoginProps> = ({ onLogin, onBackToLogin }) => {
         }}
       >
         <h3
-          className="card-title text-center mb-4"
+          className="card-title text-center mb-3"
           style={{ letterSpacing: "0.1em", color: COLORS.mainFontColor }}
         >
           Initialize Account
         </h3>
+        <p className="text-center mb-2 login-subtext">
+          Create your account to start paper trading.
+        </p>
+        <p className="text-center mb-3 login-microcopy">
+          Credentials are encrypted in transit.
+        </p>
+        {statusMessage && (
+          <div
+            className={`mb-3 ${isErrorStatus ? "login-error-banner" : "login-success-banner"}`}
+            aria-live="polite"
+          >
+            {statusMessage}
+          </div>
+        )}
 
         <form onSubmit={handleRegister}>
           {/* Identity Field */}
@@ -67,6 +96,7 @@ const Register: React.FC<LoginProps> = ({ onLogin, onBackToLogin }) => {
               type="text"
               className="search-bar"
               placeholder="NEW_IDENTITY"
+              autoComplete="username"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setUsername(e.target.value)
               }
@@ -80,15 +110,26 @@ const Register: React.FC<LoginProps> = ({ onLogin, onBackToLogin }) => {
             >
               SET PASSWORD
             </label>
-            <input
-              type="password"
-              className="search-bar"
-              placeholder="••••••••"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
-              required
-            />
+            <div className="login-password-wrap">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="search-bar"
+                placeholder="••••••••"
+                autoComplete="new-password"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
+                style={{ paddingRight: "66px" }}
+                required
+              />
+              <button
+                type="button"
+                className="login-toggle-password"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? "HIDE" : "SHOW"}
+              </button>
+            </div>
           </div>
 
           {/* Confirm Password Field */}
@@ -99,34 +140,44 @@ const Register: React.FC<LoginProps> = ({ onLogin, onBackToLogin }) => {
             >
               CONFIRM PASSWORD
             </label>
-            <input
-              type="password"
-              className="search-bar"
-              placeholder="••••••••"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setConfirmPassword(e.target.value)
-              }
-              required
-            />
+            <div className="login-password-wrap">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                className="search-bar"
+                placeholder="••••••••"
+                autoComplete="new-password"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setConfirmPassword(e.target.value)
+                }
+                style={{ paddingRight: "66px" }}
+                required
+              />
+              <button
+                type="button"
+                className="login-toggle-password"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {showConfirmPassword ? "HIDE" : "SHOW"}
+              </button>
+            </div>
           </div>
 
-          {/* High-Contrast Action Button */}
-          <button
-            type="submit"
-            className="btn-sleek btn-sleek-green w-100 mb-3"
-          >
-            CREATE ACCESS
-          </button>
-
-          {/* Subtle Navigation Button */}
-          <button
-            type="button"
-            className="btn-sleek btn-sleek-dark w-100"
-            style={{ fontSize: "11px", height: "35px" }}
-            onClick={onBackToLogin}
-          >
-            RETURN TO TERMINAL
-          </button>
+          <div className="login-actions">
+            <button
+              type="submit"
+              className="btn-sleek btn-sleek-green w-100 mb-3"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "CREATING..." : "CREATE ACCESS"}
+            </button>
+            <button
+              type="button"
+              className="btn-sleek btn-sleek-dark w-100"
+              onClick={onBackToLogin}
+            >
+              RETURN TO TERMINAL
+            </button>
+          </div>
         </form>
       </div>
     </div>

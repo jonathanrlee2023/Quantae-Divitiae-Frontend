@@ -17,7 +17,7 @@ export const OptionCard: React.FC = () => {
   const [optionType, setOptionType] = useState<string>("");
   return (
     <div
-      className="options-terminal-wrapper"
+      className="options-terminal-wrapper main-view-shell"
       style={{
         width: "100%",
         height: "100vh",
@@ -29,7 +29,7 @@ export const OptionCard: React.FC = () => {
     >
       {/* --- Navigation & Command Input Bar --- */}
       <header
-        className="d-flex align-items-center gap-3 p-2"
+        className="d-flex align-items-center gap-3 p-2 main-control-panel"
         style={{
           borderBottom: "1px solid " + COLORS.cardSoftBorder,
           backgroundColor: COLORS.cardBackground,
@@ -37,7 +37,7 @@ export const OptionCard: React.FC = () => {
         }}
       >
         <button
-          className="btn btn-sm btn-outline-secondary"
+          className="btn-sleek btn-sleek-dark main-escape-btn"
           onClick={() => setActiveCard("home")}
           style={{
             fontSize: "0.65rem",
@@ -51,7 +51,7 @@ export const OptionCard: React.FC = () => {
 
         {/* Horizontal Input Row */}
         <div
-          className="d-flex flex-grow-1 align-items-center gap-2 overflow-x-auto no-scrollbar"
+          className="d-flex flex-grow-1 align-items-center gap-2 overflow-x-auto no-scrollbar option-command-row"
           style={{ scrollbarWidth: "none" }}
         >
           <OptionsSearchBar

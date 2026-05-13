@@ -55,7 +55,7 @@ export const FinancialGrid: React.FC<GridProps> = ({ data, type }) => {
 
   return (
     <div
-      className="table-responsive custom-scrollbar"
+      className="table-responsive custom-scrollbar financial-grid-wrap"
       style={{
         height: "100%",
         width: "100%", // Ensure it takes full container width
@@ -66,7 +66,7 @@ export const FinancialGrid: React.FC<GridProps> = ({ data, type }) => {
       }}
     >
       <table
-        className="table table-dark mb-0 text-nowrap"
+        className="table table-dark mb-0 text-nowrap financial-grid-table"
         style={{
           fontSize: "0.75rem",
           fontFamily: "monospace",

@@ -56,6 +56,9 @@ export const StockToPortfolioCard: React.FC<StockCardProps> = ({
     totalAccountValue > 0
       ? ((currentShares * latestMark) / totalAccountValue) * 100
       : 0;
+  const roundedTotalPositionValue =
+    Math.round(currentShares * latestMark * 100) / 100;
+  const roundedOpenPositions = Math.round(currentShares * 100) / 100;
 
   // The CHANGE in percentage based on the current input values
   const orderImpactPct =
@@ -343,7 +346,7 @@ export const StockToPortfolioCard: React.FC<StockCardProps> = ({
                     }}
                   >
                     {currentShares > 0
-                      ? `$${(currentShares * latestMark).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+                      ? `$${roundedTotalPositionValue.toFixed(2)}`
                       : "$0.00"}
                   </span>
                 </div>
@@ -370,7 +373,7 @@ export const StockToPortfolioCard: React.FC<StockCardProps> = ({
                       paddingBottom: "2px",
                     }}
                   >
-                    {currentShares ?? 0}
+                    {roundedOpenPositions.toFixed(2)}
                   </span>
                 </div>
               </div>

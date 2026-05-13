@@ -9,12 +9,10 @@ import { OptionExpirationCards } from "../options/OptionExpirationCards";
 import { useWS } from "../contexts/WSContext";
 import { postData, ModifyTracker } from "../shared/BackendCom";
 import { COLORS } from "../../constants/Colors";
-import { useNavigation } from "../../state/NavigationContext";
 import { useSelection } from "../../state/SelectionContext";
 import { usePortfolioUI } from "../../state/PortfolioUIContext";
 
 export const StockCard: React.FC = () => {
-  const { activeCard, goTo: setActiveCard } = useNavigation();
   const { activeStock, setActiveStock, setFixedID } = useSelection();
   const { activePortfolio } = usePortfolioUI();
   const { ids, setIds, clientID, setPreviousID } = useWS();
@@ -24,9 +22,10 @@ export const StockCard: React.FC = () => {
   const { optionExpirations } = useOptionContext();
   const { balancePoints } = useBalanceContext();
   const { startStockStream } = useStreamActionsContext();
+  const activeStockPoints = stockPoints[activeStock] ?? [];
+  const isStockLoading = activeStockPoints.length === 0;
 
-  const latestMark =
-    stockPoints[activeStock]?.[stockPoints[activeStock].length - 1]?.Mark || 0;
+  const latestMark = activeStockPoints[activeStockPoints.length - 1]?.Mark || 0;
 
   const portfolioHistory = balancePoints[activePortfolio] || [];
   const currentShares = ids[activePortfolio]?.[activeStock] ?? 0;
@@ -47,6 +46,9 @@ export const StockCard: React.FC = () => {
     totalAccountValue > 0
       ? ((currentShares * latestMark) / totalAccountValue) * 100
       : 0;
+  const roundedTotalPositionValue =
+    Math.round(currentShares * latestMark * 100) / 100;
+  const roundedOpenPositions = Math.round(currentShares * 100) / 100;
 
   // The CHANGE in percentage based on the current input values
   const orderImpactPct =
@@ -111,6 +113,7 @@ export const StockCard: React.FC = () => {
   }, [latestMark, totalAccountValue]);
   return (
     <div
+      className="main-view-shell"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -125,6 +128,7 @@ export const StockCard: React.FC = () => {
     >
       {/* Main content area */}
       <div
+        className="main-view-grid"
         style={{
           display: "flex",
           flex: 1,
@@ -154,6 +158,7 @@ export const StockCard: React.FC = () => {
           </div>
 
           <div
+            className="main-chart-panel"
             style={{
               flex: 1,
               minHeight: 0,
@@ -162,19 +167,26 @@ export const StockCard: React.FC = () => {
               marginBottom: "15px",
             }}
           >
-            <TodayStockWSComponent stockSymbol={activeStock} />
+            {isStockLoading ? (
+              <div style={{ padding: "16px", height: "100%" }}>
+                <div className="skeleton skeleton-line-sm mb-3" />
+                <div className="skeleton skeleton-box" />
+              </div>
+            ) : (
+              <TodayStockWSComponent stockSymbol={activeStock} />
+            )}
           </div>
 
           {/* Execution Terminal Area */}
           <div
-            className="d-flex justify-content-between align-items-center p-3"
+            className="d-flex justify-content-between align-items-center p-3 main-control-panel"
             style={{
               background: COLORS.cardBackground,
               border: "1px solid " + COLORS.borderColor,
               borderRadius: "4px",
             }}
           >
-            <div className="d-flex align-items-center gap-4">
+            <div className="d-flex align-items-center gap-4 stock-exec-grid">
               <div className="d-flex flex-column">
                 <span
                   style={{ fontSize: "0.6rem", color: COLORS.infoTextColor }}
@@ -185,6 +197,7 @@ export const StockCard: React.FC = () => {
                   className="search-bar"
                   type="number"
                   value={amount}
+                  disabled={isStockLoading}
                   onChange={handleAmountChange}
                   onFocus={() => (isInteracting.current = true)}
                   onBlur={() => (isInteracting.current = false)}
@@ -207,6 +220,7 @@ export const StockCard: React.FC = () => {
                   className="search-bar"
                   type="number"
                   value={dollarValue}
+                  disabled={isStockLoading}
                   onChange={handleDollarChange}
                   onFocus={() => (isInteracting.current = true)}
                   onBlur={() => (isInteracting.current = false)}
@@ -232,6 +246,7 @@ export const StockCard: React.FC = () => {
                   type="number"
                   step="0.1" // Allows for fine-tuning like 1.5%
                   value={portfolioPercentage}
+                  disabled={isStockLoading}
                   onFocus={() => (isInteracting.current = true)}
                   onBlur={() => (isInteracting.current = false)}
                   onChange={handlePortfolioPercentageChange} // <--- USE IT HERE
@@ -297,7 +312,7 @@ export const StockCard: React.FC = () => {
                   }}
                 >
                   {currentShares > 0
-                    ? `$${(currentShares * latestMark).toFixed(2)}`
+                    ? `$${roundedTotalPositionValue.toFixed(2)}`
                     : "$0.00"}
                 </span>
               </div>
@@ -318,12 +333,12 @@ export const StockCard: React.FC = () => {
                     color: COLORS.mainFontColor,
                   }}
                 >
-                  {currentShares ?? 0}
+                  {roundedOpenPositions.toFixed(2)}
                 </span>
               </div>
             </div>
 
-            <div className="d-flex gap-2">
+            <div className="d-flex gap-2 stock-exec-actions">
               <button
                 className="btn-sleek btn-sleek-green"
                 onClick={() => {
@@ -429,6 +444,7 @@ export const StockCard: React.FC = () => {
 
         {/* Right side - Options Sidebar */}
         <div
+          className="main-sidebar"
           style={{
             width: "300px",
             display: "flex",
@@ -437,6 +453,7 @@ export const StockCard: React.FC = () => {
           }}
         >
           <div
+            className="main-sidebar-title"
             style={{
               fontSize: "0.65rem",
               color: COLORS.secondaryTextColor,

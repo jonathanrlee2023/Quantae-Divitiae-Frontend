@@ -39,14 +39,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             portfolio execution tools built for realistic paper trading without
             risking real money.
           </p>
+          <ul className="landing-hero-points">
+            <li>No real money risk</li>
+            <li>Live stock and options workflows</li>
+            <li>Built-in portfolio and backtest tooling</li>
+          </ul>
           <div className="landing-hero-actions">
-            <button className="btn-sleek" onClick={onLoginClick}>
+            <button
+              className="btn-sleek btn-sleek-green"
+              style={{ color: COLORS.appBackground }}
+              onClick={onLoginClick}
+            >
               Start Paper Trading
             </button>
             <a href="#features" className="btn-sleek btn-sleek-dark">
               Explore Features
             </a>
           </div>
+          <p className="landing-cta-note">
+            Free tier available. Upgrade anytime as you scale.
+          </p>
         </section>
 
         <section
@@ -90,33 +102,78 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
           id="pricing"
           className="landing-section landing-reveal landing-reveal-3"
         >
-          <h2>Tier Breakdown</h2>
-          <div className="landing-grid">
+          <h2>Choose Your Plan</h2>
+          <p className="landing-pricing-subtext">
+            Start free, then upgrade when you need more symbols, analytics, and
+            strategy depth.
+          </p>
+          <div className="landing-grid landing-pricing-grid">
             <article className="landing-price-card">
-              <h3>Free</h3>
-              <p className="landing-price">$0</p>
-              <p>
-                Delayed data (15 min), no options flow, limited to 5 watchlist
-                symbols, no backtesting.
-              </p>
+              <div className="landing-price-top">
+                <h3>Free</h3>
+                <p className="landing-price">$0</p>
+                <p className="landing-price-fit">Best for first-time users</p>
+              </div>
+              <ul className="landing-price-features">
+                <li>Stock data only</li>
+                <li>No fundamental data</li>
+                <li>Track up to 10 symbols</li>
+                <li>1 portfolio</li>
+                <li>No options</li>
+                <li>No backtesting</li>
+              </ul>
+              <button
+                className="btn-sleek btn-sleek-dark w-100 landing-price-cta"
+                onClick={onLoginClick}
+              >
+                GET FREE
+              </button>
             </article>
             <article className="landing-price-card landing-price-card-featured">
-              <h3>Basic</h3>
-              <p className="landing-price">$15/mo</p>
-              <p>
-                Real-time quotes, 25 symbols, basic fundamentals (P/E, market
-                cap). Three Portfolios, no options greeks, no DCF/intrinsic
-                value, no backtesting.
-              </p>
+              <span className="landing-badge">Most Popular</span>
+              <div className="landing-price-top">
+                <h3>Basic</h3>
+                <p className="landing-price">$19/mo</p>
+                <p className="landing-price-fit">$15/mo billed annually</p>
+              </div>
+              <ul className="landing-price-features">
+                <li>Stock and options data</li>
+                <li>No options greeks</li>
+                <li>Fundamental data</li>
+                <li>Track up to 60 symbols</li>
+                <li>Up to 3 portfolios</li>
+                <li>Backtesting capabilities</li>
+              </ul>
+              <button
+                className="btn-sleek btn-sleek-green w-100 landing-price-cta"
+                style={{ color: COLORS.appBackground }}
+                onClick={onLoginClick}
+              >
+                CHOOSE BASIC
+              </button>
             </article>
             <article className="landing-price-card">
-              <h3>Pro</h3>
-              <p className="landing-price">$40/mo</p>
-              <p>
-                Unlimited symbols, full options chain + greeks streaming, full
-                fundamental suite, backtesting, earnings calendar, sector, 10
-                portfolios.
-              </p>
+              <div className="landing-price-top">
+                <h3>Pro</h3>
+                <p className="landing-price">$49/mo</p>
+                <p className="landing-price-fit">$45/mo billed annually</p>
+              </div>
+              <ul className="landing-price-features">
+                <li>Stock and options data</li>
+                <li>Options greeks</li>
+                <li>Fundamental data</li>
+                <li>Customizable health metrics</li>
+                <li>Stock screeners</li>
+                <li>Track up to 100 symbols</li>
+                <li>Up to 10 portfolios</li>
+                <li>Backtesting capabilities</li>
+              </ul>
+              <button
+                className="btn-sleek w-100 landing-price-cta"
+                onClick={onLoginClick}
+              >
+                GO PRO
+              </button>
             </article>
           </div>
         </section>
@@ -145,7 +202,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
           style={{ color: COLORS.appBackground }}
           onClick={onLoginClick}
         >
-          Login to Continue
+          Start Now
         </button>
       </footer>
     </div>

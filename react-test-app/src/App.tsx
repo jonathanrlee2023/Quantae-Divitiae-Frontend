@@ -39,6 +39,7 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
   const [displayedCard, setDisplayedCard] = useState<string>("home");
   const [isCardTransitioning, setIsCardTransitioning] =
     useState<boolean>(false);
+  const [hoveredNavId, setHoveredNavId] = useState<string | null>(null);
 
   useEffect(() => {
     if (previousID && !activeStock) setActiveStock(previousID);
@@ -58,9 +59,20 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
     };
   }, [activeCard, displayedCard]);
 
+  const isNavItemActive = (itemId: string) => {
+    if (itemId === "backtestSelection") {
+      return (
+        activeCard === "backtestSelection" ||
+        activeCard === "backtestGraph" ||
+        activeCard === "backtestStock"
+      );
+    }
+    return activeCard === itemId;
+  };
+
   return (
     <div
-      className="container-fluid p-0"
+      className="container-fluid p-0 main-app-shell"
       style={{
         backgroundColor: COLORS.cardBackground,
         height: "100vh",
@@ -70,7 +82,7 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
     >
       {/* 1. PERSISTENT HEADER */}
       <div
-        className="d-flex align-items-center" // Removed justify-content-between
+        className="d-flex align-items-center main-app-header"
         style={{
           height: "50px",
           borderBottom: "1px solid " + COLORS.headerBottomBorder,
@@ -80,7 +92,7 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
         }}
       >
         {/* LEFT: Logo */}
-        <div style={{ flex: "0 0 200px" }}>
+        <div className="main-app-brand" style={{ flex: "0 0 200px" }}>
           {" "}
           {/* Fixed width keeps center stable */}
           <MetalText
@@ -92,6 +104,7 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
 
         {/* MIDDLE: The News Ticker */}
         <div
+          className="main-app-news"
           style={{
             flex: 1,
             display: "flex",
@@ -106,7 +119,7 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
 
         {/* RIGHT: Navigation */}
         <nav
-          className="d-flex gap-4"
+          className="d-flex gap-4 main-app-nav"
           style={{ height: "100%", flex: "0 0 auto" }}
         >
           {[
@@ -117,54 +130,57 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
             { id: "backtestSelection", label: "BACKTEST" },
             { id: "closedPosition", label: "HISTORY" },
             { id: "settings", label: "SETTINGS" },
-          ].map((item) => (
-            <div
-              key={item.id}
-              onClick={() => {
-                if (item.id === "backtestSelection") {
-                  if (backtestPayload && backtestPayload.User?.length > 0) {
-                    setActiveCard("backtestGraph");
+          ].map((item) => {
+            const isActive = isNavItemActive(item.id);
+
+            return (
+              <button
+                className="main-app-nav-btn"
+                key={item.id}
+                type="button"
+                title={`Open ${item.label}`}
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => {
+                  if (item.id === "backtestSelection") {
+                    if (backtestPayload && backtestPayload.User?.length > 0) {
+                      setActiveCard("backtestGraph");
+                    } else {
+                      setActiveCard("backtestSelection");
+                    }
                   } else {
-                    setActiveCard("backtestSelection");
+                    setActiveCard(item.id);
                   }
-                } else {
-                  setActiveCard(item.id);
-                }
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-                fontSize: "0.8rem",
-                fontWeight: 700,
-                color:
-                  activeCard === item.id
-                    ? COLORS.mainFontColor
-                    : COLORS.infoTextColor,
-                borderBottom:
-                  activeCard === item.id
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  fontSize: "0.8rem",
+                  fontWeight: 700,
+                  color:
+                    isActive || hoveredNavId === item.id
+                      ? COLORS.mainFontColor
+                      : COLORS.infoTextColor,
+                  border: "none",
+                  background: "transparent",
+                  borderBottom: isActive
                     ? "2px solid " + COLORS.secondaryTextColor
                     : `2px solid ${COLORS.transparent}`,
-                transition: "all 0.2s ease",
-                padding: "0 4px",
-                height: "100%",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = COLORS.mainFontColor;
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color =
-                  activeCard === item.id
-                    ? COLORS.mainFontColor
-                    : COLORS.infoTextColor;
-              }}
-            >
-              {item.label}
-            </div>
-          ))}
+                  transition: "all 0.2s ease",
+                  padding: "0 4px",
+                  height: "100%",
+                }}
+                onMouseEnter={() => setHoveredNavId(item.id)}
+                onMouseLeave={() => setHoveredNavId(null)}
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </nav>
       </div>
       <div
+        className="main-app-content"
         style={{
           flex: 1,
           display: "flex",

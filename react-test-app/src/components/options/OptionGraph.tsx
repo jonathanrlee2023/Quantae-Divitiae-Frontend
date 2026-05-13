@@ -109,6 +109,8 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
 
   const latestPoint = points.length > 0 ? points[points.length - 1] : null;
   const latestMark = latestPoint?.Mark ?? 0;
+  const showOptionSkeleton =
+    !fieldMissing && !isExpired && (isPending || points.length === 0);
 
   const graphData = React.useMemo(() => {
     const minutePoints = new Map<number, OptionPoint>(); // key: floored minute, value: StockPoint
@@ -343,12 +345,19 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
           backgroundColor: COLORS.cardBackground,
         }}
       >
-        <Line
-          key={stockSymbol}
-          options={options}
-          data={graphData}
-          plugins={[verticalLinePlugin]}
-        />
+        {showOptionSkeleton ? (
+          <div style={{ padding: "16px", height: "100%" }}>
+            <div className="skeleton skeleton-line-sm mb-3" />
+            <div className="skeleton skeleton-box" />
+          </div>
+        ) : (
+          <Line
+            key={stockSymbol}
+            options={options}
+            data={graphData}
+            plugins={[verticalLinePlugin]}
+          />
+        )}
       </div>
 
       {/* --- METRIC SELECTOR GRID --- */}
