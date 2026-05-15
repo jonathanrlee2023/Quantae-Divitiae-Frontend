@@ -99,7 +99,6 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
 
     ws.current.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
-      console.log("parsed", parsed);
       setLastMessage(parsed);
 
       if (parsed.type === "TICKER_UPDATE") {
