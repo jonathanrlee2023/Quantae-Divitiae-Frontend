@@ -23,6 +23,7 @@ import {
   BacktestPayload,
   useStockContext,
 } from "./StockContext";
+import { apiWsUrl } from "../../api/client";
 
 interface WSActionsContextValue {
   sendMessage: (msg: any) => void;
@@ -89,7 +90,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
   useEffect(() => {
     const token = getAccessToken();
     ws.current = new WebSocket(
-      `ws://localhost:8080/connect?id=${clientID}&token=${encodeURIComponent(token ?? "")}`,
+      `${apiWsUrl()}/connect?id=${clientID}&token=${encodeURIComponent(token ?? "")}`,
     );
 
     ws.current.onopen = () => {
@@ -98,6 +99,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
 
     ws.current.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
+      console.log("parsed", parsed);
       setLastMessage(parsed);
 
       if (parsed.type === "TICKER_UPDATE") {

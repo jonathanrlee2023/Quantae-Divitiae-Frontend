@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.css";
@@ -17,17 +17,44 @@ import { NavigationProvider } from "./state/NavigationContext";
 import { SelectionProvider } from "./state/SelectionContext";
 import { PortfolioUIProvider } from "./state/PortfolioUIContext";
 import { clearAccessToken } from "./auth/token";
+import { logoutSession, refreshAccessToken } from "./api/client";
 
 const Main = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
-  const handleLogout = () => {
+  const performLocalLogout = () => {
     clearAccessToken();
     setUserId(null);
     setIsRegistering(false);
     setShowLanding(false);
   };
+  const handleLogout = () => {
+    void logoutSession();
+    performLocalLogout();
+  };
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const refresh = async () => {
+      try {
+        await refreshAccessToken();
+      } catch {
+        void logoutSession();
+        performLocalLogout();
+      }
+    };
+
+    const refreshInterval = window.setInterval(
+      () => void refresh(),
+      15 * 60 * 1000,
+    );
+
+    return () => {
+      window.clearInterval(refreshInterval);
+    };
+  }, [userId]);
 
   if (!userId) {
     return (

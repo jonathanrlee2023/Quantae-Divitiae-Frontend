@@ -168,9 +168,17 @@ export const StockCard: React.FC = () => {
             }}
           >
             {isStockLoading ? (
-              <div style={{ padding: "16px", height: "100%" }}>
-                <div className="skeleton skeleton-line-sm mb-3" />
-                <div className="skeleton skeleton-box" />
+              <div
+                style={{
+                  padding: "16px",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                }}
+              >
+                <div className="skeleton skeleton-line-sm" />
+                <div className="skeleton skeleton-box" style={{ flex: 1, minHeight: 0 }} />
               </div>
             ) : (
               <TodayStockWSComponent stockSymbol={activeStock} />

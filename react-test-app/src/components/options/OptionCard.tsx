@@ -1,20 +1,67 @@
 import React, { useState } from "react";
 
-import OptionsSearchBar from "./OptionsSearchBar";
 import { OptionWSComponent } from "./OptionGraph";
 import { COLORS } from "../../constants/Colors";
 import { useNavigation } from "../../state/NavigationContext";
 import { usePortfolioUI } from "../../state/PortfolioUIContext";
+import { useStreamActionsContext } from "../contexts/StreamActionsContext";
+import { useWSActions } from "../contexts/WSContext";
 
 export const OptionCard: React.FC = () => {
   const { goTo: setActiveCard } = useNavigation();
   const { activePortfolio } = usePortfolioUI();
-  const [underlyingStock, setUnderlyingStock] = useState<string>("");
-  const [optionDay, setOptionDay] = useState<string>("");
-  const [optionMonth, setOptionMonth] = useState<string>("");
-  const [optionYear, setOptionYear] = useState<string>("");
-  const [strikePrice, setStrikePrice] = useState<string>("");
-  const [optionType, setOptionType] = useState<string>("");
+  const { startOptionStream } = useStreamActionsContext();
+  const [formValues, setFormValues] = useState({
+    underlyingStock: "",
+    strikePrice: "",
+    optionDay: "",
+    optionMonth: "",
+    optionYear: "",
+    optionType: "",
+  });
+  const [searchParams, setSearchParams] = useState(formValues);
+  const { clientID } = useWSActions();
+  const updateField = (field: keyof typeof formValues, value: string) => {
+    const normalized =
+      field === "underlyingStock" || field === "optionType"
+        ? value.toUpperCase()
+        : value;
+    setFormValues((prev) => ({ ...prev, [field]: normalized }));
+  };
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const nextParams = {
+      underlyingStock: formValues.underlyingStock.trim(),
+      strikePrice: formValues.strikePrice.trim(),
+      optionDay: formValues.optionDay.trim(),
+      optionMonth: formValues.optionMonth.trim(),
+      optionYear: formValues.optionYear.trim(),
+      optionType: formValues.optionType.trim(),
+    };
+    setSearchParams(nextParams);
+    await startOptionStream(
+      nextParams.underlyingStock,
+      nextParams.strikePrice,
+      nextParams.optionDay,
+      nextParams.optionMonth,
+      nextParams.optionYear,
+      nextParams.optionType,
+      clientID,
+    );
+  };
+  const baseInputStyle: React.CSSProperties = {
+    width: "100%",
+    minWidth: 0,
+    height: "34px",
+    border: `1px solid ${COLORS.borderColor}`,
+    borderRadius: "4px",
+    backgroundColor: COLORS.cardBackground,
+    color: COLORS.mainFontColor,
+    fontSize: "0.75rem",
+    padding: "0 10px",
+  };
+
   return (
     <div
       className="options-terminal-wrapper main-view-shell"
@@ -27,7 +74,6 @@ export const OptionCard: React.FC = () => {
         overflow: "hidden", // Prevents the main body from scrolling
       }}
     >
-      {/* --- Navigation & Command Input Bar --- */}
       <header
         className="d-flex align-items-center gap-3 p-2 main-control-panel"
         style={{
@@ -49,66 +95,108 @@ export const OptionCard: React.FC = () => {
           ← ESC
         </button>
 
-        {/* Horizontal Input Row */}
-        <div
-          className="d-flex flex-grow-1 align-items-center gap-2 overflow-x-auto no-scrollbar option-command-row"
-          style={{ scrollbarWidth: "none" }}
+        <form
+          className="flex-grow-1 d-flex align-items-end gap-2 flex-wrap"
+          onSubmit={handleSearch}
         >
-          <OptionsSearchBar
-            setSearchQuery={setUnderlyingStock}
-            searchQuery={underlyingStock}
-            inputMessage="TICKER"
-            onEnter={setUnderlyingStock}
-            onSearchClick={setUnderlyingStock}
-          />
-
-          <OptionsSearchBar
-            setSearchQuery={setStrikePrice}
-            searchQuery={strikePrice}
-            inputMessage="STRIKE"
-            onEnter={setStrikePrice}
-            onSearchClick={setStrikePrice}
-          />
-
-          {/* Date Cluster */}
           <div
-            className="d-flex gap-1 align-items-center px-2"
-            style={{
-              borderLeft: "1px solid " + COLORS.borderColor,
-              borderRight: "1px solid " + COLORS.borderColor,
-            }}
+            className="d-flex flex-column"
+            style={{ flex: "2 1 120px", minWidth: 0 }}
           >
-            <OptionsSearchBar
-              setSearchQuery={setOptionDay}
-              searchQuery={optionDay}
-              inputMessage="DD"
-              onEnter={setOptionDay}
-              onSearchClick={setOptionDay}
-            />
-            <OptionsSearchBar
-              setSearchQuery={setOptionMonth}
-              searchQuery={optionMonth}
-              inputMessage="MM"
-              onEnter={setOptionMonth}
-              onSearchClick={setOptionMonth}
-            />
-            <OptionsSearchBar
-              setSearchQuery={setOptionYear}
-              searchQuery={optionYear}
-              inputMessage="YYYY"
-              onEnter={setOptionYear}
-              onSearchClick={setOptionYear}
+            <span style={{ fontSize: "0.58rem", color: COLORS.infoTextColor }}>
+              TICKER
+            </span>
+            <input
+              style={baseInputStyle}
+              value={formValues.underlyingStock}
+              onChange={(e) => updateField("underlyingStock", e.target.value)}
+              placeholder="AAPL"
             />
           </div>
 
-          <OptionsSearchBar
-            setSearchQuery={setOptionType}
-            searchQuery={optionType}
-            inputMessage="CALL/PUT"
-            onEnter={setOptionType}
-            onSearchClick={setOptionType}
-          />
-        </div>
+          <div
+            className="d-flex flex-column"
+            style={{ flex: "2 1 120px", minWidth: 0 }}
+          >
+            <span style={{ fontSize: "0.58rem", color: COLORS.infoTextColor }}>
+              STRIKE
+            </span>
+            <input
+              style={baseInputStyle}
+              value={formValues.strikePrice}
+              onChange={(e) => updateField("strikePrice", e.target.value)}
+              placeholder="200"
+            />
+          </div>
+
+          <div
+            className="d-flex flex-column"
+            style={{ flex: "1 1 78px", minWidth: 0 }}
+          >
+            <span style={{ fontSize: "0.58rem", color: COLORS.infoTextColor }}>
+              DAY
+            </span>
+            <input
+              style={baseInputStyle}
+              value={formValues.optionDay}
+              onChange={(e) => updateField("optionDay", e.target.value)}
+              placeholder="DD"
+            />
+          </div>
+
+          <div
+            className="d-flex flex-column"
+            style={{ flex: "1 1 86px", minWidth: 0 }}
+          >
+            <span style={{ fontSize: "0.58rem", color: COLORS.infoTextColor }}>
+              MONTH
+            </span>
+            <input
+              style={baseInputStyle}
+              value={formValues.optionMonth}
+              onChange={(e) => updateField("optionMonth", e.target.value)}
+              placeholder="MM"
+            />
+          </div>
+
+          <div
+            className="d-flex flex-column"
+            style={{ flex: "1 1 92px", minWidth: 0 }}
+          >
+            <span style={{ fontSize: "0.58rem", color: COLORS.infoTextColor }}>
+              YEAR
+            </span>
+            <input
+              style={baseInputStyle}
+              value={formValues.optionYear}
+              onChange={(e) => updateField("optionYear", e.target.value)}
+              placeholder="YY"
+            />
+          </div>
+
+          <div
+            className="d-flex flex-column"
+            style={{ flex: "2 1 130px", minWidth: 0 }}
+          >
+            <span style={{ fontSize: "0.58rem", color: COLORS.infoTextColor }}>
+              TYPE
+            </span>
+            <input
+              style={baseInputStyle}
+              value={formValues.optionType}
+              onChange={(e) => updateField("optionType", e.target.value)}
+              placeholder="CALL / PUT"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn-sleek btn-sleek-dark main-escape-btn"
+            style={{ flex: "0 0 auto" }}
+          >
+            SEARCH
+          </button>
+        </form>
       </header>
 
       {/* --- Live Stream & Trading Engine Area --- */}
@@ -120,12 +208,12 @@ export const OptionCard: React.FC = () => {
         }}
       >
         <OptionWSComponent
-          stockSymbol={underlyingStock}
-          strikePrice={strikePrice}
-          year={optionYear}
-          month={optionMonth}
-          day={optionDay}
-          type={optionType}
+          stockSymbol={searchParams.underlyingStock}
+          strikePrice={searchParams.strikePrice}
+          year={searchParams.optionYear}
+          month={searchParams.optionMonth}
+          day={searchParams.optionDay}
+          type={searchParams.optionType}
           activePortfolio={activePortfolio}
         />
       </main>

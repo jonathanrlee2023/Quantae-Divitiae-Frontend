@@ -91,7 +91,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             <article className="landing-feature-card">
               <h3>Backtesting Flows</h3>
               <p>
-                Test strategies with historical data to validate ideas before
+                Test portfolios with historical data to validate ideas before
                 live deployment.
               </p>
             </article>

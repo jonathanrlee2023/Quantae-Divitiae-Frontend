@@ -1,4 +1,4 @@
-import React, { act, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -19,7 +19,6 @@ import { verticalLinePlugin } from "../stocks/TodayGraph";
 import { formatFriendlyId } from "./OptionExpirationCards";
 import { COLORS } from "../../constants/Colors";
 import { postData, formatOptionSymbol, ModifyTracker } from "../shared/BackendCom";
-import exp from "constants";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -63,7 +62,7 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
   type,
   activePortfolio,
 }) => {
-  const { pendingRequests, startOptionStream } = useStreamActionsContext();
+  const { pendingRequests } = useStreamActionsContext();
   const { optionPoints } = useOptionContext();
   const { ids, setIds, setTrackers, clientID } = useWS();
 
@@ -254,67 +253,6 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
         padding: "0",
       }}
     >
-      {/* --- TOP CONTROL ROW: Search & Track --- */}
-      <div
-        className="d-flex gap-2 p-2 align-items-center"
-        style={{
-          flex: "0 0 auto",
-          borderBottom: `1px solid ${COLORS.neutrals.n222}`,
-        }}
-      >
-        <button
-          className={`btn-sleek ${isPending ? "btn-loading" : ""}`}
-          style={{
-            minWidth: "120px",
-            backgroundColor: COLORS.secondaryTextColor,
-            color: COLORS.mainFontColor,
-          }}
-          onClick={() =>
-            startOptionStream(
-              stockSymbol,
-              strikePrice,
-              day,
-              month,
-              year,
-              type,
-              clientID,
-            )
-          }
-          disabled={fieldMissing || isExpired}
-        >
-          {isPending ? "BUSY..." : "STREAM LIVE 📡"}
-        </button>
-
-        <div className="ms-auto d-flex gap-2">
-          <button
-            className="btn-sleek btn-outline"
-            onClick={() => {
-              ModifyTracker("newTracker", expectedSymbol);
-              setTrackers((prev) =>
-                prev.includes(expectedSymbol)
-                  ? prev
-                  : [...prev, expectedSymbol],
-              );
-            }}
-            disabled={fieldMissing || isExpired}
-          >
-            TRACK
-          </button>
-          <button
-            className="btn-sleek btn-outline text-danger"
-            onClick={() => {
-              ModifyTracker("closeTracker", expectedSymbol);
-              setTrackers((prev) =>
-                prev.filter((item) => item !== expectedSymbol),
-              );
-            }}
-            disabled={fieldMissing || isExpired}
-          >
-            UNTRACK
-          </button>
-        </div>
-      </div>
-
       {/* --- STATUS NOTIFICATIONS (Pinned) --- */}
       {(isExpired || fieldMissing || latestMark <= 0) && (
         <div
@@ -444,7 +382,7 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
           </div>
         </div>
 
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 flex-wrap">
           <button
             className="btn btn-success flex-grow-1 fw-bold"
             style={{ opacity: latestMark <= 0 || isExpired ? 0.5 : 1 }}
@@ -525,6 +463,32 @@ export const OptionWSComponent: React.FC<OptionWSProps> = ({
             disabled={latestMark <= 0 || currentContracts <= 0}
           >
             EXIT ALL
+          </button>
+          <button
+            className="btn btn-outline-secondary fw-bold"
+            onClick={() => {
+              ModifyTracker("newTracker", expectedSymbol);
+              setTrackers((prev) =>
+                prev.includes(expectedSymbol)
+                  ? prev
+                  : [...prev, expectedSymbol],
+              );
+            }}
+            disabled={fieldMissing || isExpired}
+          >
+            TRACK
+          </button>
+          <button
+            className="btn btn-outline-danger fw-bold"
+            onClick={() => {
+              ModifyTracker("closeTracker", expectedSymbol);
+              setTrackers((prev) =>
+                prev.filter((item) => item !== expectedSymbol),
+              );
+            }}
+            disabled={fieldMissing || isExpired}
+          >
+            UNTRACK
           </button>
         </div>
       </div>
