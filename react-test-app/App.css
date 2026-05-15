@@ -245,8 +245,16 @@ td:last-child {
 
 .login-container {
   background:
-    radial-gradient(800px 380px at 80% -10%, rgba(126, 124, 243, 0.12), transparent 64%),
-    radial-gradient(700px 320px at 0% 100%, rgba(0, 255, 136, 0.06), transparent 70%),
+    radial-gradient(
+      800px 380px at 80% -10%,
+      rgba(126, 124, 243, 0.12),
+      transparent 64%
+    ),
+    radial-gradient(
+      700px 320px at 0% 100%,
+      rgba(0, 255, 136, 0.06),
+      transparent 70%
+    ),
     #000000;
   min-height: 100vh;
   display: flex;
@@ -340,8 +348,16 @@ td:last-child {
 /* --- Main App Visual System --- */
 .main-app-shell {
   background:
-    radial-gradient(900px 460px at 12% -14%, rgba(126, 124, 243, 0.12), transparent 62%),
-    radial-gradient(900px 420px at 90% 0%, rgba(0, 255, 136, 0.06), transparent 70%),
+    radial-gradient(
+      900px 460px at 12% -14%,
+      rgba(126, 124, 243, 0.12),
+      transparent 62%
+    ),
+    radial-gradient(
+      900px 420px at 90% 0%,
+      rgba(0, 255, 136, 0.06),
+      transparent 70%
+    ),
     #0a0a0a !important;
 }
 
@@ -575,8 +591,16 @@ input[type="number"]::-webkit-inner-spin-button {
 .landing-page {
   min-height: 100vh;
   background:
-    radial-gradient(1200px 500px at 15% -10%, rgba(126, 124, 243, 0.18), transparent 60%),
-    radial-gradient(900px 420px at 90% 10%, rgba(0, 255, 136, 0.08), transparent 62%),
+    radial-gradient(
+      1200px 500px at 15% -10%,
+      rgba(126, 124, 243, 0.18),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 420px at 90% 10%,
+      rgba(0, 255, 136, 0.08),
+      transparent 62%
+    ),
     linear-gradient(180deg, #040404 0%, #000000 62%);
   color: #ffffff;
 }
@@ -588,27 +612,27 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .landing-reveal-0 {
-  animation-delay: 150ms;
+  animation-delay: 200ms;
 }
 
 .landing-reveal-1 {
-  animation-delay: 250ms;
-}
-
-.landing-reveal-2 {
   animation-delay: 300ms;
 }
 
-.landing-reveal-3 {
-  animation-delay: 350ms;
-}
-
-.landing-reveal-4 {
+.landing-reveal-2 {
   animation-delay: 400ms;
 }
 
+.landing-reveal-3 {
+  animation-delay: 500ms;
+}
+
+.landing-reveal-4 {
+  animation-delay: 600ms;
+}
+
 .landing-reveal-5 {
-  animation-delay: 450ms;
+  animation-delay: 700ms;
 }
 
 @keyframes landing-reveal {
@@ -1069,4 +1093,31 @@ input[type="number"]::-webkit-inner-spin-button {
   .landing-hero-points li {
     font-size: 0.72rem;
   }
+}
+
+/* --- Route transitions (Landing -> Login -> App) --- */
+.route-transition-shell {
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.route-transition-content {
+  min-height: 100vh;
+  width: 100%;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.route-transition-content--exiting {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+}
+
+.route-transition-shell--app .route-transition-content {
+  min-height: 100vh;
 }

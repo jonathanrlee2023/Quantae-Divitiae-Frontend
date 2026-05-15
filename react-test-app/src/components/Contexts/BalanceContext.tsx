@@ -26,7 +26,9 @@ export type PortfolioBalancePoint = Record<number, BalancePoint[]>;
 export type GlobalNews = Record<string, string>;
 interface BalanceContextValue {
   balancePoints: PortfolioBalancePoint;
+  historicalBalancePoints: PortfolioBalancePoint;
   updateBalancePoint: (point: BalancePoint) => void;
+  setBalanceHistory: (history: PortfolioBalancePoint) => void;
   news: GlobalNews;
   updateNews: (point: GlobalNews) => void;
 }
@@ -39,6 +41,8 @@ export const BalanceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [balancePoints, setBalancePoints] = useState<PortfolioBalancePoint>({});
+  const [historicalBalancePoints, setHistoricalBalancePoints] =
+    useState<PortfolioBalancePoint>({});
   const [news, setNews] = useState<GlobalNews>({});
 
   const updateNews = useCallback((newItems: GlobalNews) => {
@@ -70,9 +74,20 @@ export const BalanceProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, []);
 
+  const setBalanceHistory = useCallback((history: PortfolioBalancePoint) => {
+    setHistoricalBalancePoints(history);
+  }, []);
+
   return (
     <BalanceContext.Provider
-      value={{ balancePoints, updateBalancePoint, news, updateNews }}
+      value={{
+        balancePoints,
+        historicalBalancePoints,
+        updateBalancePoint,
+        setBalanceHistory,
+        news,
+        updateNews,
+      }}
     >
       {children}
     </BalanceContext.Provider>

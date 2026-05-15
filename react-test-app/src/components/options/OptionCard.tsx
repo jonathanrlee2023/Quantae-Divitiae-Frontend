@@ -111,6 +111,7 @@ export const OptionCard: React.FC = () => {
               value={formValues.underlyingStock}
               onChange={(e) => updateField("underlyingStock", e.target.value)}
               placeholder="AAPL"
+              required
             />
           </div>
 
@@ -126,6 +127,7 @@ export const OptionCard: React.FC = () => {
               value={formValues.strikePrice}
               onChange={(e) => updateField("strikePrice", e.target.value)}
               placeholder="200"
+              required
             />
           </div>
 
@@ -141,6 +143,7 @@ export const OptionCard: React.FC = () => {
               value={formValues.optionDay}
               onChange={(e) => updateField("optionDay", e.target.value)}
               placeholder="DD"
+              required
             />
           </div>
 
@@ -156,6 +159,7 @@ export const OptionCard: React.FC = () => {
               value={formValues.optionMonth}
               onChange={(e) => updateField("optionMonth", e.target.value)}
               placeholder="MM"
+              required
             />
           </div>
 
@@ -170,7 +174,8 @@ export const OptionCard: React.FC = () => {
               style={baseInputStyle}
               value={formValues.optionYear}
               onChange={(e) => updateField("optionYear", e.target.value)}
-              placeholder="YY"
+              placeholder="YYYY"
+              required
             />
           </div>
 
@@ -185,7 +190,8 @@ export const OptionCard: React.FC = () => {
               style={baseInputStyle}
               value={formValues.optionType}
               onChange={(e) => updateField("optionType", e.target.value)}
-              placeholder="CALL / PUT"
+              placeholder="C (Call) / P (Put)"
+              required
             />
           </div>
 

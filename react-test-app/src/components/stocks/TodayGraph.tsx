@@ -41,8 +41,62 @@ interface TodayStockWSProps {
 type Timeframe = "Live" | "1W" | "1M" | "3M" | "1Y" | "3Y" | "All";
 
 const METRIC_EXPLANATIONS: Record<string, string> = {
-  OVERALL_HEALTH:
-    "Composite quality score (0-100) based on valuation, growth, profitability, and balance sheet signals.",
+  OVERALL_HEALTH: `Metric Details:
+        ---------------
+        1. Capital Efficiency (ROIC vs WACC)
+        - ROIC and WACC must be in consistent units (both as percentages).
+        - ROIC > 2x WACC: +15 (elite capital allocator)
+        - ROIC > WACC:    +10 (creating shareholder value)
+        - ROIC > 0:        +5 (at least profitable on capital)
+        - ROIC < 0:       -10 (actively destroying capital)
+
+        2. Valuation (PEG Ratio)
+        - Negative PEG indicates declining earnings and is penalized.
+        - 0 < PEG <= 1.0:  +15 (undervalued relative to growth)
+        - 1.0 < PEG <= 1.5: +10 (fairly valued)
+        - 1.5 < PEG <= 2.0:  +5 (mildly overvalued)
+        - PEG < 0:          -10 (earnings declining)
+
+        3. Earnings Quality (Sloan Ratio)
+        - Measures accrual component of earnings. High absolute values
+            indicate earnings are not backed by cash flow.
+        - |sloan| <= 0.10:  +15 (high quality earnings)
+        - |sloan| <= 0.20:   +7 (acceptable)
+        - |sloan| <= 0.25:   -5 (elevated accrual risk)
+        - |sloan| >  0.25:  -10 (aggressive accrual manipulation territory)
+
+        4. Margin of Safety (Intrinsic vs Current Price)
+        - Based on DCF-derived intrinsic price vs price at last fiscal report.
+        - intrinsic > 1.5x current:  +20 (deep value, 50% margin of safety)
+        - intrinsic > 1.3x current:  +15 (strong margin of safety, 30%)
+        - intrinsic > current:        +8 (trading below intrinsic)
+        - intrinsic < 0.7x current:  -5  (trading at 30%+ premium to intrinsic)
+
+        5. Analyst Sentiment
+        - Normalized against structural sell-side bullishness bias.
+            Raw buy/sell counts are insufficient — buy% relative to total is used.
+        - buy% > 70% and buys > 5: +15 (exceptional conviction)
+        - buy% > 55%:               +8 (above baseline bullishness)
+        - buy% < 40%:               -5 (genuine negative consensus)
+
+        6. Free Cash Flow Yield (FCF / Market Cap)
+        - FCF values are stored in millions; market cap in raw dollars.
+        - FCF yield > 5%:  +15 (strong cash generation)
+        - FCF yield > 2%:   +8 (acceptable)
+        - FCF yield > 0%:   +3 (positive but thin)
+        - FCF yield <= 0%:  -5 (cash burn)
+
+        7. Growth Sustainability (Forecasted vs Historical)
+        - Rewards both maintenance of growth rate AND absolute growth level.
+        - Forecasted growth >= 75% of historical AND fore > 10%: +10
+        - Forecasted growth >= 75% of historical:                 +7
+        - Forecasted growth > 0%:                                 +3
+
+        8. Leverage (Debt-to-Equity)
+        - High leverage amplifies downside and increases insolvency risk.
+        - D/E < 0.3:  +10 (conservatively financed)
+        - D/E < 1.0:   +5 (manageable)
+        - D/E > 3.0:  -10 (dangerously leveraged)`,
   "Market Cap":
     "Total equity value of the company: current share price multiplied by shares outstanding.",
   Sector:
@@ -63,10 +117,8 @@ const METRIC_EXPLANATIONS: Record<string, string> = {
     "Price/Earnings divided by growth rate; lower values can indicate better value relative to growth.",
   "Sloan Ratio":
     "Earnings quality measure comparing accrual-based earnings to cash-based earnings.",
-  WACC:
-    "Weighted Average Cost of Capital; blended required return from debt and equity financing.",
-  ROIC:
-    "Return on Invested Capital; efficiency of turning invested capital into operating returns.",
+  WACC: "Weighted Average Cost of Capital; blended required return from debt and equity financing.",
+  ROIC: "Return on Invested Capital; efficiency of turning invested capital into operating returns.",
 };
 
 export const verticalLinePlugin = {
@@ -101,6 +153,7 @@ export const TodayStockWSComponent: React.FC<TodayStockWSProps> = ({
   const { ids, setPreviousCard } = useWS();
 
   const [showStats, setShowStats] = useState(false);
+  const [activeMetricInfo, setActiveMetricInfo] = useState<string | null>(null);
   const stats = companyStats[stockSymbol]; // Get stats for current symbol
 
   const previousIdsRef = useRef<Record<number, Record<string, number>>>({});
@@ -196,35 +249,81 @@ export const TodayStockWSComponent: React.FC<TodayStockWSProps> = ({
     valueStyle?: React.CSSProperties; // Add this
   }
 
-  const StatRow: React.FC<StatRowProps> = ({ label, value, valueStyle }) => (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        fontSize: "0.9rem",
-      }}
-    >
-      <span
-        title={METRIC_EXPLANATIONS[label] ?? undefined}
-        style={{
-          color: COLORS.infoTextColor,
-          cursor: "default",
-          textDecoration: "none",
-        }}
-      >
-        {label}
-      </span>
-      <span
-        style={{
-          color: COLORS.mainFontColor,
-          textAlign: "right",
-          ...valueStyle,
-        }}
-      >
-        {value}
-      </span>
-    </div>
-  );
+  const StatRow: React.FC<StatRowProps> = ({ label, value, valueStyle }) => {
+    const explanation = METRIC_EXPLANATIONS[label];
+    const isInfoOpen = activeMetricInfo === label;
+
+    return (
+      <div style={{ fontSize: "0.9rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <div className="d-flex align-items-center gap-1" style={{ minWidth: 0 }}>
+            <span style={{ color: COLORS.infoTextColor }}>{label}</span>
+            {explanation && (
+              <button
+                type="button"
+                aria-label={`Info about ${label}`}
+                aria-expanded={isInfoOpen}
+                onClick={() =>
+                  setActiveMetricInfo((prev) => (prev === label ? null : label))
+                }
+                style={{
+                  flexShrink: 0,
+                  width: "16px",
+                  height: "16px",
+                  padding: 0,
+                  border: `1px solid ${COLORS.borderColor}`,
+                  borderRadius: "50%",
+                  background: isInfoOpen
+                    ? COLORS.secondaryTextColor
+                    : COLORS.cardBackground,
+                  color: isInfoOpen ? COLORS.mainFontColor : COLORS.infoTextColor,
+                  fontSize: "0.62rem",
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  cursor: "pointer",
+                }}
+              >
+                i
+              </button>
+            )}
+          </div>
+          <span
+            style={{
+              color: COLORS.mainFontColor,
+              textAlign: "right",
+              ...valueStyle,
+            }}
+          >
+            {value}
+          </span>
+        </div>
+        {isInfoOpen && explanation && (
+          <div
+            style={{
+              marginTop: "6px",
+              padding: "8px 10px",
+              border: `1px solid ${COLORS.cardSoftBorder}`,
+              borderRadius: "4px",
+              background: COLORS.cardBackground,
+              color: COLORS.secondaryTextColor,
+              fontSize: "0.72rem",
+              lineHeight: 1.45,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {explanation}
+          </div>
+        )}
+      </div>
+    );
+  };
   const options = React.useMemo(() => {
     return {
       responsive: true,

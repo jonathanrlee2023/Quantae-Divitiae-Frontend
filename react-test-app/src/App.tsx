@@ -190,7 +190,7 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
           overflow: "hidden" /* Keeps children like HomePage constrained */,
           opacity: isCardTransitioning ? 0 : 1,
           transform: isCardTransitioning ? "translateY(8px)" : "translateY(0)",
-          transition: "opacity 250ms ease, transform 300ms ease",
+          transition: "opacity 400ms ease, transform 600ms ease",
         }}
       >
         {displayedCard === "home" && <HomePage />}

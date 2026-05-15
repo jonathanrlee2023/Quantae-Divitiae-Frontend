@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import "../App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { ButtonsProvider } from "./components/shared/ButtonContext";
 import { StockProvider } from "./components/contexts/StockContext";
@@ -13,6 +14,7 @@ import Login from "./pages/LoginPage";
 import Register from "./pages/CreateLoginPage";
 import LandingPage from "./pages/LandingPage";
 import { MetalFilter } from "./components/shared/MetalFilter";
+import { RouteTransition } from "./components/shared/RouteTransition";
 import { NavigationProvider } from "./state/NavigationContext";
 import { SelectionProvider } from "./state/SelectionContext";
 import { PortfolioUIProvider } from "./state/PortfolioUIContext";
@@ -23,12 +25,14 @@ const Main = () => {
   const [userId, setUserId] = useState<number | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
+
   const performLocalLogout = () => {
     clearAccessToken();
     setUserId(null);
     setIsRegistering(false);
     setShowLanding(false);
   };
+
   const handleLogout = () => {
     void logoutSession();
     performLocalLogout();
@@ -56,60 +60,70 @@ const Main = () => {
     };
   }, [userId]);
 
-  if (!userId) {
-    return (
-      <>
-        {/* Render the filter here so Login/Register can see it */}
-        <MetalFilter />
-        {showLanding ? (
-          <LandingPage onLoginClick={() => setShowLanding(false)} />
-        ) : (
-          <>
-            {isRegistering ? (
-              <Register
-                onBackToLogin={() => setIsRegistering(false)}
-                onLogin={(id) => setUserId(id)}
-              />
-            ) : (
-              <Login
-                onLogin={(id) => setUserId(id)}
-                onGoToRegister={() => setIsRegistering(true)}
-                onBackToLanding={() => {
-                  setIsRegistering(false);
-                  setShowLanding(true);
-                }}
-              />
-            )}
-          </>
-        )}
-      </>
-    );
-  }
+  const screenKey = userId
+    ? "app"
+    : showLanding
+      ? "landing"
+      : isRegistering
+        ? "register"
+        : "login";
 
-  // Once logged in, render the app with all Contexts
+  const screens = useMemo(
+    () => ({
+      landing: <LandingPage onLoginClick={() => setShowLanding(false)} />,
+      login: (
+        <Login
+          onLogin={(id) => setUserId(id)}
+          onGoToRegister={() => setIsRegistering(true)}
+          onBackToLanding={() => {
+            setIsRegistering(false);
+            setShowLanding(true);
+          }}
+        />
+      ),
+      register: (
+        <Register
+          onBackToLogin={() => setIsRegistering(false)}
+          onLogin={(id) => setUserId(id)}
+        />
+      ),
+      app:
+        userId != null ? (
+          <ButtonsProvider>
+            <StockProvider>
+              <OptionProvider>
+                <BalanceProvider>
+                  <CompanyProvider>
+                    <StreamActionsProvider>
+                      <WSProvider clientID={`STOCK_CLIENT_${userId}`}>
+                        <NavigationProvider>
+                          <SelectionProvider>
+                            <PortfolioUIProvider>
+                              <App onLogout={handleLogout} />
+                            </PortfolioUIProvider>
+                          </SelectionProvider>
+                        </NavigationProvider>
+                      </WSProvider>
+                    </StreamActionsProvider>
+                  </CompanyProvider>
+                </BalanceProvider>
+              </OptionProvider>
+            </StockProvider>
+          </ButtonsProvider>
+        ) : null,
+    }),
+    [userId],
+  );
+
   return (
-    <ButtonsProvider>
-      <StockProvider>
-        <OptionProvider>
-          <BalanceProvider>
-            <CompanyProvider>
-              <StreamActionsProvider>
-                <WSProvider clientID={`STOCK_CLIENT_${userId}`}>
-                  <MetalFilter />
-                  <NavigationProvider>
-                    <SelectionProvider>
-                      <PortfolioUIProvider>
-                        <App onLogout={handleLogout} />
-                      </PortfolioUIProvider>
-                    </SelectionProvider>
-                  </NavigationProvider>
-                </WSProvider>
-              </StreamActionsProvider>
-            </CompanyProvider>
-          </BalanceProvider>
-        </OptionProvider>
-      </StockProvider>
-    </ButtonsProvider>
+    <>
+      <MetalFilter />
+      <RouteTransition
+        screenKey={screenKey}
+        screens={screens}
+        className={screenKey === "app" ? "route-transition-shell--app" : ""}
+      />
+    </>
   );
 };
 

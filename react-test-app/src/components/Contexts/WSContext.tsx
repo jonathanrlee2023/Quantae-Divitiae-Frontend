@@ -78,7 +78,7 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
     ClosePositions: {},
   });
 
-  const { updateBalancePoint, updateNews } = useBalanceContext();
+  const { updateBalancePoint, setBalanceHistory, updateNews } = useBalanceContext();
   const { updateCompanyStats } = useCompanyContext();
   const { updateOptionExpirations, updateOptionPoint } = useOptionContext();
   const {
@@ -160,6 +160,20 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
         setTrackers(parsed.trackerIdList ?? []);
         setPreviousBalance(parsed.prevBalance);
         setPortfolioNames(parsed.portfolioNames ?? {});
+
+        if (parsed.balanceHistory) {
+          const normalized: Record<number, BalancePoint[]> = {};
+          for (const [key, points] of Object.entries(parsed.balanceHistory)) {
+            const portfolioID = Number(key);
+            normalized[portfolioID] = (points as BalancePoint[]).map((p) => ({
+              timestamp: Number(p.timestamp),
+              Balance: Number(p.Balance),
+              Cash: Number(p.Cash),
+              PortfolioID: Number(p.PortfolioID ?? portfolioID),
+            }));
+          }
+          setBalanceHistory(normalized);
+        }
         return;
       }
 
