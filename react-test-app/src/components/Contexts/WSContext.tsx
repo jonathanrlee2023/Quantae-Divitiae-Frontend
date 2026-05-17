@@ -8,7 +8,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { getAccessToken } from "../../auth/token";
+import { getClerkAuthToken } from "../../auth/clerkToken";
 import {
   BalancePoint,
   ClosePosition,
@@ -88,14 +88,19 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
   } = useStockContext();
 
   useEffect(() => {
-    const token = getAccessToken();
-    ws.current = new WebSocket(
-      `${apiWsUrl()}/connect?id=${clientID}&token=${encodeURIComponent(token ?? "")}`,
-    );
+    let cancelled = false;
 
-    ws.current.onopen = () => {
-      console.log(`Websocket connected ${clientID}`);
-    };
+    const connect = async () => {
+      const token = await getClerkAuthToken();
+      if (cancelled) return;
+
+      ws.current = new WebSocket(
+        `${apiWsUrl()}/connect?id=${clientID}&token=${encodeURIComponent(token ?? "")}`,
+      );
+
+      ws.current.onopen = () => {
+        console.log(`Websocket connected ${clientID}`);
+      };
 
     ws.current.onmessage = (event) => {
       const parsed = JSON.parse(event.data);
@@ -220,12 +225,15 @@ export const WSProvider = ({ children, clientID }: Props): JSX.Element => {
       console.warn("Unhandled WS message:", parsed);
     };
 
-    ws.current.onclose = () => {
-      console.log("Websocket connection closed");
+      ws.current.onclose = () => {
+        console.log("Websocket connection closed");
+      };
     };
 
-    // Cleanup on unmount or clientID change
+    void connect();
+
     return () => {
+      cancelled = true;
       ws.current?.close();
       ws.current = null;
     };

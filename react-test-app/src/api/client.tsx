@@ -1,4 +1,8 @@
-import { getAccessToken, setAccessToken } from "../auth/token";
+import { getClerkAuthToken } from "../auth/clerkToken";
+
+async function resolveAuthToken(): Promise<string | null> {
+  return getClerkAuthToken();
+}
 
 const DEFAULT_BASE_URL = "http://localhost:8080";
 const DEFAULT_WS_URL = "ws://localhost:8080";
@@ -24,7 +28,7 @@ export function apiUrl(path: string) {
 }
 
 export async function apiFetch(path: string, init: RequestInit = {}) {
-  const token = getAccessToken();
+  const token = await resolveAuthToken();
 
   const headers = new Headers(init.headers ?? undefined);
   if (token && !headers.has("Authorization")) {
@@ -35,30 +39,5 @@ export async function apiFetch(path: string, init: RequestInit = {}) {
     ...init,
     headers,
     credentials: init.credentials ?? "include",
-  });
-}
-
-export async function refreshAccessToken(): Promise<string> {
-  const response = await fetch(apiUrl("/refresh"), {
-    method: "POST",
-    credentials: "include",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to refresh access token");
-  }
-
-  const data = await response.json();
-  if (typeof data?.access_token !== "string" || !data.access_token) {
-    throw new Error("Invalid refresh response");
-  }
-
-  setAccessToken(data.access_token);
-  return data.access_token;
-}
-
-export async function logoutSession(): Promise<void> {
-  await fetch(apiUrl("/logout"), {
-    method: "POST",
-    credentials: "include",
   });
 }

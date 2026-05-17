@@ -1,11 +1,8 @@
-import React from "react";
+﻿import React from "react";
+import { SignOutButton, UserButton } from "@clerk/react";
 import { COLORS } from "../../constants/Colors";
 
-interface SettingsCardProps {
-  onLogout: () => void;
-}
-
-export const SettingsCard: React.FC<SettingsCardProps> = ({ onLogout }) => {
+export const SettingsCard: React.FC = () => {
   return (
     <div
       style={{
@@ -27,6 +24,7 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({ onLogout }) => {
           background: COLORS.cardBackground,
           border: `1px solid ${COLORS.cardSoftBorder}`,
           borderRadius: "8px",
+          padding: "24px",
         }}
       >
         <div
@@ -40,9 +38,14 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({ onLogout }) => {
         >
           ACCOUNT SETTINGS
         </div>
-        <button className="btn-sleek btn-sleek-red w-100" onClick={onLogout}>
-          LOG OUT
-        </button>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+          <UserButton />
+        </div>
+        <SignOutButton>
+          <button type="button" className="btn-sleek btn-sleek-red w-100">
+            LOG OUT
+          </button>
+        </SignOutButton>
       </div>
     </div>
   );

@@ -1,12 +1,27 @@
 import React from "react";
+import { SignInButton, SignUpButton } from "@clerk/react";
 import { MetalText } from "../components/shared/MetalText";
 import { COLORS } from "../constants/Colors";
 
-interface LandingPageProps {
-  onLoginClick: () => void;
+function SignInCta({
+  className,
+  style,
+  children,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  return (
+    <SignInButton mode="modal">
+      <button type="button" className={className} style={style}>
+        {children}
+      </button>
+    </SignInButton>
+  );
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
+const LandingPage: React.FC = () => {
   return (
     <div className="landing-page">
       <header className="landing-header landing-reveal landing-reveal-0">
@@ -21,12 +36,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
           <a href="#pricing">Pricing</a>
           <a href="#about">About</a>
           <a href="#features">Features</a>
-          <button
-            className="btn-sleek landing-login-btn"
-            onClick={onLoginClick}
-          >
-            Login
-          </button>
+          <SignInCta className="btn-sleek landing-login-btn">Login</SignInCta>
+          <SignUpButton mode="modal">
+            <button type="button" className="btn-sleek btn-sleek-dark ms-2">
+              Sign up
+            </button>
+          </SignUpButton>
         </nav>
       </header>
 
@@ -45,13 +60,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
             <li>Built-in portfolio and backtest tooling</li>
           </ul>
           <div className="landing-hero-actions">
-            <button
+            <SignInCta
               className="btn-sleek btn-sleek-green"
               style={{ color: COLORS.appBackground }}
-              onClick={onLoginClick}
             >
               Start Paper Trading
-            </button>
+            </SignInCta>
             <a href="#features" className="btn-sleek btn-sleek-dark">
               Explore Features
             </a>
@@ -122,12 +136,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                 <li>No options</li>
                 <li>No backtesting</li>
               </ul>
-              <button
-                className="btn-sleek btn-sleek-dark w-100 landing-price-cta"
-                onClick={onLoginClick}
-              >
+              <SignInCta className="btn-sleek btn-sleek-dark w-100 landing-price-cta">
                 GET FREE
-              </button>
+              </SignInCta>
             </article>
             <article className="landing-price-card landing-price-card-featured">
               <span className="landing-badge">Most Popular</span>
@@ -144,13 +155,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                 <li>Up to 3 portfolios</li>
                 <li>Backtesting capabilities</li>
               </ul>
-              <button
+              <SignInCta
                 className="btn-sleek btn-sleek-green w-100 landing-price-cta"
                 style={{ color: COLORS.appBackground }}
-                onClick={onLoginClick}
               >
                 CHOOSE BASIC
-              </button>
+              </SignInCta>
             </article>
             <article className="landing-price-card">
               <div className="landing-price-top">
@@ -168,12 +178,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                 <li>Up to 10 portfolios</li>
                 <li>Backtesting capabilities</li>
               </ul>
-              <button
-                className="btn-sleek w-100 landing-price-cta"
-                onClick={onLoginClick}
-              >
+              <SignInCta className="btn-sleek w-100 landing-price-cta">
                 GO PRO
-              </button>
+              </SignInCta>
             </article>
           </div>
         </section>
@@ -197,13 +204,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
       </main>
 
       <footer className="landing-footer landing-reveal landing-reveal-5">
-        <button
+        <SignInCta
           className="btn-sleek btn-sleek-green"
           style={{ color: COLORS.appBackground }}
-          onClick={onLoginClick}
         >
           Start Now
-        </button>
+        </SignInCta>
       </footer>
     </div>
   );

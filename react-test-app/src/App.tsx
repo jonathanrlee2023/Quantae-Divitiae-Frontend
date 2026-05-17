@@ -23,12 +23,9 @@ import { useNavigation } from "./state/NavigationContext";
 import { useSelection } from "./state/SelectionContext";
 import { ClosedPositionCard } from "./components/portfolio/ClosedPositionCard";
 import SettingsCard from "./components/settings/SettingsCard";
+import { UserButton } from "@clerk/react";
 
-interface AppProps {
-  onLogout: () => void;
-}
-
-const App: React.FC<AppProps> = ({ onLogout }) => {
+const App: React.FC = () => {
   const { previousID } = useWSData();
   const { backtestPayload } = useStockContext();
   const { activeCard, goTo: setActiveCard } = useNavigation();
@@ -117,11 +114,12 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
           <NewsTicker />
         </div>
 
-        {/* RIGHT: Navigation */}
-        <nav
-          className="d-flex gap-4 main-app-nav"
+        {/* RIGHT: Navigation + account */}
+        <div
+          className="d-flex align-items-center gap-3"
           style={{ height: "100%", flex: "0 0 auto" }}
         >
+        <nav className="d-flex gap-4 main-app-nav" style={{ height: "100%" }}>
           {[
             { id: "home", label: "DASHBOARD" },
             { id: "stock", label: "STOCKS" },
@@ -178,6 +176,8 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
             );
           })}
         </nav>
+        <UserButton />
+        </div>
       </div>
       <div
         className="main-app-content"
@@ -221,7 +221,7 @@ const App: React.FC<AppProps> = ({ onLogout }) => {
         {displayedCard === "closedPosition" && (
           <ClosedPositionCard defaultMessage="No closed positions" />
         )}
-        {displayedCard === "settings" && <SettingsCard onLogout={onLogout} />}
+        {displayedCard === "settings" && <SettingsCard />}
       </div>
     </div>
   );
